@@ -442,3 +442,48 @@ def test_hgnc_resolves_withdrawn_readthrough_but_not_real_multigene_probe():
     assert data.parse_probe_annotation(annotation, aliases) == {"p1": "VEGFD", "p2": "TMT1A"}
     with pytest.raises(data.FormatError, match="No unambiguous"):
         data.parse_probe_annotation(annotation)
+
+
+def test_actual_cli_download_calls_real_metadata_wrapper(workspace, monkeypatch):
+    from gastric_repro.cli import main
+    configure_prepare(monkeypatch)
+    output = workspace / "cli-download"
+    status = main([
+        "download", "--dataset", "GSE54129", "--metadata-only",
+        "--cache", str(workspace / "cache"), "--output", str(output),
+    ])
+    assert status == 0
+    provenance = json.loads((output / "GSE54129/provenance.json").read_text())
+    assert provenance["stage"] == "metadata_only"
+    assert provenance["status"] == "complete"
+    assert (output / "GSE54129/manifest.csv").is_file()
+    assert json.loads((output / "download_run.json").read_text())["status"] == "completed"
+
+
+@pytest.mark.parametrize("local_cdf", [False, True])
+def test_actual_cli_normalise_passes_cdf_and_fallback_keywords(workspace, monkeypatch, local_cdf):
+    from gastric_repro.cli import main
+    configure_prepare(monkeypatch)
+    output = workspace / "cli-normalise"
+    arguments = [
+        "normalise", "--dataset", "GSE54129", "--allow-series-matrix",
+        "--cache", str(workspace / "cache"), "--output", str(output),
+    ]
+    if local_cdf:
+        cdf = workspace / "supplied.cdf"
+        cdf.write_bytes(b"fixture local CDF")
+        arguments.extend(["--cdf", str(cdf)])
+    assert main(arguments) == 0
+    provenance = json.loads((output / "GSE54129/provenance.json").read_text())
+    assert provenance["status"] == "complete"
+    assert provenance["allow_series_matrix"] is True
+    assert provenance["normalization"] == "raw_PM_RMA_python"
+    if local_cdf:
+        record = next(item for item in provenance["artifacts"] if item["role"] == "PM_CDF")
+        assert record["source"] == "explicit user-supplied local CDF"
+    manifest = pd.read_csv(output / "GSE54129/manifest.csv")
+    assert manifest["label"].tolist() == [1, 0]
+    assert manifest["included"].tolist() == [True, True]
+    expression = pd.read_csv(output / "GSE54129/expression.csv", index_col=0)
+    assert expression.index.name == "gene"
+    assert expression.columns.tolist() == ["GSM1", "GSM2"]

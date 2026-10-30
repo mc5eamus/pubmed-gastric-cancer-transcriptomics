@@ -97,11 +97,12 @@ def _atomic_json(path: Path, value: dict) -> None:
 
 
 def _https(url: str) -> str:
-    if url.startswith("ftp://ftp.ncbi.nlm.nih.gov/"):
-        url = url.replace("ftp://", "https://", 1)
-    if urlparse(url).scheme != "https":
+    parsed = urlparse(url)
+    if parsed.scheme == "ftp" and parsed.netloc == "ftp.ncbi.nlm.nih.gov":
+        parsed = parsed._replace(scheme="https")
+    if parsed.scheme != "https":
         raise AcquisitionError(f"Only HTTPS acquisition URLs are supported: {url}")
-    return url
+    return parsed.geturl()
 
 
 def download(
