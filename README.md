@@ -3,7 +3,10 @@
 Rebuilds the analysis of [Lopes et al., Scientific Reports 15, 18491 (2025)](https://doi.org/10.1038/s41598-025-96864-0).
 Python **3.14+**, with pinned dependencies and a hash-bearing `uv.lock`.
 
-**Status:** implementation and audit, not a completed numerical reproduction.
+**Status:** partial reproduction, not a completed numerical replication.
+Actual raw saliva processing recovered all 14 published DEGs among 37
+downregulated genes; mapped/filter counts differ (20,953 / 20,527).
+Tissue processing, GSEA, model tables and cohort-scale robustness remain unrun.
 Read `REPORT.md` for claim-by-claim status, assumptions, source discrepancies
 and data-access limitations. No published number is presented as computed.
 This is research software, not a validated diagnostic.
@@ -129,6 +132,9 @@ Small checked-in publication transcriptions and source-access records live
 under `reference/publication/`; these are **published references**, not model
 results. Verified GSM manifests and metadata provenance for all four cohorts
 are under `reference/acquisition/`.
+Small actual raw-saliva results, including DEG statistics, plots and CEL
+checksums, are under `reference/computed/GSE64951/`. These are computed
+results, not the published reference targets.
 
 The repository-level `REPORT.md` remains the human-reviewed audit. Generated
 reports expose measurements and missing stages, not automatic proof of clinical

@@ -148,6 +148,25 @@ def test_binary_cel_truncation_and_unsupported(workspace):
         module.read_cel(path)
 
 
+def test_public_cel_reader_dispatches_calvin_and_wraps_format_errors(workspace, monkeypatch):
+    path = workspace / "calvin.CEL.gz"
+    path.write_bytes(gzip.compress(b"\x3b\x01dispatch fixture"))
+    expected = np.arange(6, dtype=float).reshape(2, 3)
+    calls = []
+    def read_calvin(candidate):
+        calls.append(candidate)
+        return expected
+    monkeypatch.setattr(module, "read_calvin_cel", read_calvin)
+    np.testing.assert_array_equal(module.read_cel(path), expected)
+    assert calls == [path]
+    def corrupt_calvin(candidate):
+        raise module.CalvinFormatError("Calvin offset outside file")
+    monkeypatch.setattr(module, "read_calvin_cel", corrupt_calvin)
+    with pytest.raises(module.FormatError, match="offset outside") as error:
+        module.read_cel(path)
+    assert isinstance(error.value.__cause__, module.CalvinFormatError)
+
+
 @pytest.mark.parametrize("binary", [False, True])
 @pytest.mark.parametrize("compressed", [False, True])
 def test_cdf_real_format_pm_selection(workspace, binary, compressed):

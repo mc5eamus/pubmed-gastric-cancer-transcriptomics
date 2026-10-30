@@ -227,6 +227,34 @@ def test_download_retries_network_errors_and_forbids_http(workspace, monkeypatch
         data.download("http://example.org/input", workspace / "unsafe")
 
 
+@pytest.mark.parametrize("url", [
+    "ftp://ftp.ncbi.nlm.nih.gov.evil.example/raw.CEL.gz",
+    "ftp://ftp.ncbi.nlm.nih.gov@evil.example/raw.CEL.gz",
+    "ftp://user@ftp.ncbi.nlm.nih.gov/raw.CEL.gz",
+    "ftp://ftp.ncbi.nlm.nih.gov:21/raw.CEL.gz",
+    "ftp://evil.example/ftp.ncbi.nlm.nih.gov/raw.CEL.gz",
+    "ftp://evil.example/?source=ftp://ftp.ncbi.nlm.nih.gov/raw.CEL.gz",
+    "http://ftp.ncbi.nlm.nih.gov/raw.CEL.gz",
+    "//ftp.ncbi.nlm.nih.gov/raw.CEL.gz",
+    "file:///ftp.ncbi.nlm.nih.gov/raw.CEL.gz",
+])
+def test_geo_ftp_upgrade_rejects_spoofed_authorities_and_other_schemes(url):
+    with pytest.raises(data.AcquisitionError, match="HTTPS"):
+        data._https(url)
+
+
+def test_geo_ftp_upgrade_changes_only_exact_authority_scheme():
+    url = "ftp://ftp.ncbi.nlm.nih.gov/geo/raw.CEL.gz?original=ftp://other.example/file#fragment"
+    assert data._https(url) == (
+        "https://ftp.ncbi.nlm.nih.gov/geo/raw.CEL.gz?original=ftp://other.example/file#fragment"
+    )
+    assert data._https("FTP://ftp.ncbi.nlm.nih.gov/raw.CEL.gz") == (
+        "https://ftp.ncbi.nlm.nih.gov/raw.CEL.gz"
+    )
+    https_url = "https://example.org/ftp://ftp.ncbi.nlm.nih.gov/raw.CEL.gz"
+    assert data._https(https_url) == https_url
+
+
 def test_probe_annotation_and_hgnc_aliases_highest_mean():
     annotation = data.parse_probe_annotation(
         "^Annotation\n!platform_table_begin\nID\tGene symbol\n"

@@ -1,10 +1,10 @@
 # Reproduction status: Lopes et al. (2025)
 
-**This is an implementation and audit, not a completed numerical reproduction.**
-No raw-cohort RMA, Tables 1–3 replication, or large robustness experiment has
-been completed for this report. Published values are reference targets, never
-substitutes for measurements. A successful unit test is not a reproduced
-biological claim.
+**This is a partial reproduction, not a completed numerical replication.**
+Raw saliva RMA and differential expression have been run; tissue processing,
+GSEA, Tables 1–3 model replication, and cohort-scale robustness experiments have
+not. Published values are reference targets, never substitutes for measurements.
+A successful unit test is not a reproduced biological claim.
 
 Source: [Scientific Reports, DOI 10.1038/s41598-025-96864-0](https://doi.org/10.1038/s41598-025-96864-0),
 PMID 40425785, PMCID PMC12116728, CC BY 4.0.
@@ -14,16 +14,17 @@ was retrieved (122,137 bytes; SHA256
 
 ## Claim-by-claim verdict
 
-“Not reproduced” below means **not yet assessed on raw cohort data**, not
-evidence that the publication is incorrect.
+“Not reproduced” below means **not yet assessed**, not evidence that the
+publication is incorrect. “Partially” distinguishes observed agreement from
+numerical discrepancies and missing experiments.
 
 | Published claim | Verdict | What is required for a verdict based on data |
 |---|---|---|
 | 400 tissue training, 94 saliva, 132 Chinese tissue, 69 Italian tissue samples | Partially reproduced: metadata counts match exactly | Raw CEL parsing/normalization remains separate from the metadata audit |
-| 21,367 annotated unique genes | Not reproduced | Raw normalization and declared annotation/alias release |
-| 14,782 tissue / 20,407 saliva genes after filtering | Not reproduced | Compare all three declared median-filter interpretations |
+| 21,367 annotated unique genes | Partially: saliva yields 20,953; tissue unassessed | Annotation/alias and duplicate-probe rules differ or are unspecified |
+| 14,782 tissue / 20,407 saliva genes after filtering | Partially: saliva yields 20,527; tissue unassessed | All three declared saliva filter counts are saved |
 | Tissue 1,302 DEGs: 579 up, 723 down | Not reproduced | Moderated DE on raw-derived log2 expression |
-| Saliva 14 DEGs, all down; no tissue overlap | Not reproduced | Exact list comparison and overlap artifact |
+| Saliva 14 DEGs, all down; no tissue overlap | Partially: all 14 recovered among 37 downregulated DEGs | Tissue overlap remains unassessed |
 | Tissue cell-cycle GSEA and saliva CC/MF terms; no significant saliva BP | Not reproduced | All-ontology GSEA, GO snapshot hashes, NES/FDR comparisons |
 | CDH3, DKC1, ESM1, MUSTN1, RCC2, TMT1A, VEGFD tissue signature | Not reproduced | Discovered signature and importance ranks, not a forced panel |
 | Table 1: internal tissue performance | Not reproduced | Fixed split, selected panel, predictions and confidence intervals |
@@ -49,6 +50,38 @@ subseries membership and individual CEL URLs are retained under
 | GSE64951 | 63 | 31 | 0 / 0 |
 | GSE54129 | 111 | 21 | 0 / 0 |
 | GSE13911 | 38 | 31 | 0 / 0 |
+
+### Completed raw saliva analysis
+
+All **94 raw Calvin CEL files** were downloaded, checksummed and processed using
+the Python PM-only RMA implementation, **without processed-matrix fallback**.
+The finalized run started with source hashes and matches analysis code at commit
+`c11b4d0d370feb9efa1e82681dc25c2819697134`. Small auditable outputs are under
+`reference/computed/GSE64951/`: summary, manifest with CEL hashes, provenance,
+startup module hashes, filter sensitivity, DEG statistics, volcano and heatmap.
+The large expression matrix and CELs remain git-ignored.
+
+| Saliva checkpoint | Published | Computed |
+|---|---:|---:|
+| GC / control samples | 63 / 31 | 63 / 31 |
+| Mapped unique genes | 21,367 | 20,953 |
+| Genes after default median rule | 20,407 | 20,527 |
+| DEGs | 14 | 37 |
+| Up / down | 0 / 14 | 0 / 37 |
+| Published 14 genes recovered | 14 | 14 |
+
+The other filter rules retain **11,171** genes (mean above global median) and
+**10,014** (at least half the samples above global median). The predeclared
+default is closest to the published count, but its result was not changed to
+force 20,407 genes or 14 DEGs.
+
+All published saliva DEGs occur in the computed list; **23 additional genes**
+meet the strict thresholds. The recovered direction agrees with the paper,
+but the gene universe and DEG cardinality do not. This supports a **partial**
+verdict, not exact numerical reproduction. Differences may arise from the
+unreported duplicate-probe rule, current annotation, median filtering,
+independent RMA background estimation and empirical-Bayes implementation.
+No R/affy numerical parity or clinical screening validity is established.
 
 ## Source discrepancies and unresolved evidence
 
@@ -93,9 +126,11 @@ subseries membership and individual CEL URLs are retained under
    healthy volunteers. GSE54129's series-level control description conflicts
    with some sample source text; tissue characteristics determine class.
 4. **Probe mapping:** highest-mean-expression probe per unambiguous gene;
-   deterministic ties. Ambiguous multi-symbol probes are excluded. HGNC alias
-   resolution is recorded, including METTL7A→TMT1A, SEPT10→SEPTIN10,
-   FIGF→VEGFD. Annotation updates can change the tested universe.
+   deterministic ties. Multiple symbols resolve only when they identify a single
+   current HGNC gene after removing unrecognized/withdrawn names; genuinely
+   multi-gene probes are excluded. HGNC alias resolution is recorded, including
+   METTL7A→TMT1A, SEPT10→SEPTIN10, FIGF→VEGFD. Annotation updates can change
+   the tested universe.
 5. **Low-expression rule:** default retains genes with any sample above the
    global matrix median. Alternatives retain genes with mean above that median,
    or at least half the samples above it. Counts are compared to the paper;
@@ -142,6 +177,20 @@ subseries membership and individual CEL URLs are retained under
     positive divided by zero remains infinity. PPV/NPV depend on cohort
     prevalence, which is not screening prevalence.
 
+## Validation performed
+
+Python **3.14.10** targeted validations: acquisition/RMA **73 passing tests**,
+statistics/enrichment **56**, ML/metrics/robustness **30**, and Calvin/parser/
+orchestration/reference handling **34**. Reduced synthetic DE→ML→robustness
+integration produced all **20** A–D model/scenario rows, **160** metric intervals,
+and **21** robustness summaries, with identical paper-like/fold-local holdout
+IDs. Those synthetic numbers are validation counts, **not biological results**.
+A package build succeeded; secrets scanning was clean and the URL-conversion
+CodeQL warning was fixed, followed by a zero-alert scan.
+
+At this checkpoint GitHub Actions reported `action_required`, with zero jobs;
+remote CI has not yet run and needs maintainer attention.
+
 ## Interpretation limits
 
 Differences can arise from annotation, symbol updates, CEL processing,
@@ -150,4 +199,5 @@ cross-cohort expression shifts. A highly accurate internal tissue classifier
 does not establish useful saliva screening, and there is no independent
 external saliva cohort in this study. Until raw-cohort results and robustness
 outputs are computed, neither numerical replication nor clinical utility has
-been established here.
+been established here. The saliva DE result is a limited partial reproduction;
+all unrun cohort/model/robustness claims remain unresolved.
