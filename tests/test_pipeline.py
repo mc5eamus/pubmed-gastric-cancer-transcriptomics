@@ -3,7 +3,10 @@ from pathlib import Path
 import pandas as pd
 import pytest
 
-from gastric_repro.pipeline import Settings, load_cohort, read_de, report_stage, sha256, write_json
+from gastric_repro.pipeline import (
+    Settings, load_cohort, read_de, report_stage, saliva_model_features, sha256, write_json,
+)
+from gastric_repro.published import SALIVA_GENES
 
 
 def test_invalid_resampling_settings():
@@ -11,6 +14,21 @@ def test_invalid_resampling_settings():
         Settings(Path("/tmp/data"), Path("/tmp/results"), candidates=11)
     with pytest.raises(ValueError, match="positive"):
         Settings(Path("/tmp/data"), Path("/tmp/results"), bootstrap=0)
+
+
+def test_saliva_model_gene_sets_are_explicit_and_present():
+    genes = list(SALIVA_GENES) + ["EXTRA"]
+    expression = pd.DataFrame([[1.0]] * len(genes), index=genes, columns=["GSM1"])
+    de = pd.DataFrame({"is_deg": [True]}, index=["EXTRA"])
+    assert saliva_model_features(expression, de, "published") == list(SALIVA_GENES)
+    assert saliva_model_features(expression, de, "discovered") == ["EXTRA"]
+    with pytest.raises(ValueError, match="missing from expression"):
+        saliva_model_features(expression.drop(index=SALIVA_GENES[0]), de, "published")
+
+
+def test_invalid_saliva_gene_set_rejected():
+    with pytest.raises(ValueError, match="saliva_gene_set"):
+        Settings(Path("/tmp/data"), Path("/tmp/results"), saliva_gene_set="other")
 
 
 def test_manifest_alignment_and_exclusions(tmp_path):

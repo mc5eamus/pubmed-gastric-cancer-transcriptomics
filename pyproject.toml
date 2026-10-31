@@ -30,3 +30,8 @@ testpaths = ["tests"]
 dev = [
     "pytest==9.2.0",
 ]
+notebook = [
+    "ipykernel==7.1.0",
+    "jupyter==1.1.1",
+    "nbclient==0.10.2",
+]
