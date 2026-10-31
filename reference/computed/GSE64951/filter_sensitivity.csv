@@ -1,0 +1,4 @@
+rule,input_genes,retained_genes,global_median,removed_genes
+any_above_median,20953,20527,1.90007235,426
+mean_above_median,20953,11171,1.90007235,9782
+half_above_median,20953,10014,1.90007235,10939

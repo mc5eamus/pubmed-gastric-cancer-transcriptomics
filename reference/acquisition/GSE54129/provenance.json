@@ -1,0 +1,61 @@
+{
+  "artifacts": [
+    {
+      "bytes": 6347,
+      "hash_policy": "trust_on_first_use",
+      "path": "/home/runner/work/pubmed-gastric-cancer-transcriptomics/pubmed-gastric-cancer-transcriptomics/data/cache/GSE54129/series.soft",
+      "resolved_url": "https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE54129&targ=self&form=text&view=full",
+      "retrieved_utc": "2026-10-30T14:21:35.293111+00:00",
+      "role": "series_metadata",
+      "sha256": "129e02cf9cef63ee9c69e2ef59c352f3381ee646cc9c365ef5ee91d75bb4a6a9",
+      "url": "https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE54129&targ=self&form=text&view=full"
+    },
+    {
+      "bytes": 267749,
+      "hash_policy": "trust_on_first_use",
+      "path": "/home/runner/work/pubmed-gastric-cancer-transcriptomics/pubmed-gastric-cancer-transcriptomics/data/cache/GSE54129/samples.soft",
+      "resolved_url": "https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE54129&targ=gsm&form=text&view=brief",
+      "retrieved_utc": "2026-10-30T14:21:40.069918+00:00",
+      "role": "sample_metadata",
+      "sha256": "57cde7d22914ab6fb4ed46b3378e483ac97b7a704b67d3909c1b2c7ba5e8514c",
+      "url": "https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE54129&targ=gsm&form=text&view=brief"
+    }
+  ],
+  "biospecimen": "gastric tissue",
+  "completed_utc": "2026-10-30T14:32:12.311256+00:00",
+  "dataset": "GSE54129",
+  "expression_available": false,
+  "label_policy": "explicit metadata; exclude non-GC disease; fail ambiguity",
+  "n_excluded": 0,
+  "n_included": 132,
+  "normalization": "not_run",
+  "outputs": {
+    "manifest.csv": {
+      "path": "/home/runner/work/pubmed-gastric-cancer-transcriptomics/pubmed-gastric-cancer-transcriptomics/reference/acquisition/GSE54129/manifest.csv",
+      "sha256": "5dc3157d32b435cf5fbc35f0de73954572f1e3bdf783e4b1795c7edee846e0ca"
+    }
+  },
+  "platform": "GPL570",
+  "raw_cel_files_downloaded": 0,
+  "raw_rma_parity_validated": false,
+  "sample_counts": {
+    "ambiguous_gsms": [],
+    "count_status": "matches_expected",
+    "discrepancies": {},
+    "expected": {
+      "normal": 21,
+      "total": 132,
+      "tumor": 111
+    },
+    "observed": {
+      "available_total": 132,
+      "excluded": 0,
+      "normal": 21,
+      "total": 132,
+      "tumor": 111
+    }
+  },
+  "stage": "metadata_only",
+  "started_utc": "2026-10-30T14:32:12.292589+00:00",
+  "status": "complete"
+}
