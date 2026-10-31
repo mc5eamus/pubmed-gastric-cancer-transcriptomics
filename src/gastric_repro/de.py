@@ -250,6 +250,54 @@ def plot_volcano(results: pd.DataFrame, output_path: str | Path) -> Path:
     return path
 
 
+def plot_saliva_deg_volcano(
+    results: pd.DataFrame,
+    output_path: str | Path,
+    *,
+    published_genes: list[str],
+) -> Path:
+    """Plot and label saliva DEGs, distinguishing published and additional genes."""
+    from matplotlib.backends.backend_agg import FigureCanvasAgg
+    from matplotlib.figure import Figure
+
+    required = {"log2FC", "padj", "is_deg"}
+    if not required.issubset(results.columns) or not results.index.is_unique:
+        raise ValueError(f"results must have unique gene IDs and columns {sorted(required)}")
+    x = results["log2FC"].to_numpy(dtype=float)
+    p = results["padj"].to_numpy(dtype=float)
+    if not np.isfinite(x).all() or not np.isfinite(p).all() or ((p < 0) | (p > 1)).any():
+        raise ValueError("volcano values must be finite with adjusted p-values in [0, 1]")
+    is_deg = results["is_deg"].astype(bool).to_numpy()
+    genes = results.index.astype(str)
+    published = np.isin(genes, published_genes) & is_deg
+    additional = ~np.isin(genes, published_genes) & is_deg
+    background = ~is_deg
+
+    figure = Figure(figsize=(9, 6))
+    FigureCanvasAgg(figure)
+    axis = figure.subplots()
+    y = -np.log10(np.maximum(p, np.finfo(float).tiny))
+    axis.scatter(x[background], y[background], c="lightgray", s=9, alpha=0.5,
+                 label="Not significant")
+    axis.scatter(x[additional], y[additional], c="darkorange", s=18, alpha=0.8,
+                 label="Additional computed DEGs")
+    axis.scatter(x[published], y[published], c="royalblue", s=22, alpha=0.9,
+                 label="Published 14 DEGs")
+    for index in np.flatnonzero(published | additional):
+        axis.annotate(genes[index], (x[index], y[index]), fontsize=6, xytext=(2, 2),
+                      textcoords="offset points")
+    axis.axvline(-1, color="black", linestyle="--", linewidth=0.7)
+    axis.axvline(1, color="black", linestyle="--", linewidth=0.7)
+    axis.axhline(-np.log10(0.05), color="black", linestyle="--", linewidth=0.7)
+    axis.set(xlabel="log2 fold change (group 1 - group 0)",
+             ylabel="-log10 BH-adjusted p", title="Saliva differential expression")
+    axis.legend()
+    path = Path(output_path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    figure.savefig(path, bbox_inches="tight", dpi=150)
+    return path
+
+
 def plot_heatmap(
     expression: pd.DataFrame,
     output_path: str | Path,

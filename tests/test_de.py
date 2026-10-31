@@ -10,6 +10,7 @@ from gastric_repro.de import (
     filter_expression,
     filter_sensitivity_counts,
     plot_heatmap,
+    plot_saliva_deg_volcano,
     plot_volcano,
     squeeze_var,
 )
@@ -206,3 +207,24 @@ def test_headless_plots(expression, labels, tmp_path):
         plot_heatmap(expression, tmp_path / "empty.png", genes=[])
     with pytest.raises(ValueError, match="nonempty"):
         plot_heatmap(expression, tmp_path / "nodeg.png", results=results.assign(is_deg=False))
+
+
+def test_saliva_volcano_labels_published_and_additional_degs(tmp_path):
+    results = pd.DataFrame(
+        {"log2FC": [-2.0, -1.5, 0.1], "padj": [0.01, 0.02, 0.5],
+         "is_deg": [True, True, False]},
+        index=["PUBLISHED", "ADDITIONAL", "BACKGROUND"],
+    )
+    path = plot_saliva_deg_volcano(
+        results, tmp_path / "saliva.png", published_genes=["PUBLISHED"],
+    )
+    assert path.read_bytes().startswith(b"\x89PNG")
+
+
+def test_saliva_volcano_rejects_duplicate_genes(tmp_path):
+    results = pd.DataFrame(
+        {"log2FC": [1.0, 1.0], "padj": [0.01, 0.01], "is_deg": [True, True]},
+        index=["DUPLICATE", "DUPLICATE"],
+    )
+    with pytest.raises(ValueError, match="unique gene IDs"):
+        plot_saliva_deg_volcano(results, tmp_path / "saliva.png", published_genes=[])
