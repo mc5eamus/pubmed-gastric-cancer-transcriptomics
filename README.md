@@ -27,6 +27,28 @@ uv run --frozen pytest -q
 CI runs the offline unit tests on Python 3.14. Tests use small fixtures, not
 the public multi-GB CEL data.
 
+## Article-ordered notebook
+
+Open the executed, reference-mode presentation with Jupyter:
+
+```bash
+uv run --frozen --group notebook jupyter notebook notebooks/lopes2025_reproduction.ipynb
+```
+
+The parameter cell defaults to **reference** mode: it is offline and reads only
+checked-in `reference/` files. Unrun stages appear as explicit placeholders; a
+published target is never presented as a computed result. **Reduced** mode runs
+the README's exploratory settings and downloads public data; its results are
+not paper-faithful. **Full** mode reads an existing completed `results/` output
+from `gastric-repro run` and never launches that long run from the notebook.
+Change `RUN_MODE` at the top to select a mode. CI executes the notebook in
+reference mode without network access.
+
+The saliva model stage supports both the published 14-gene panel and discovered
+DEGs: run `gastric-repro ml --saliva-gene-set published` or
+`gastric-repro ml --saliva-gene-set discovered` using separate output directories
+for side-by-side results.
+
 ## One-command analysis
 
 ```bash

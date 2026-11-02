@@ -34,6 +34,14 @@ def test_report_command_records_actual_stage_only(tmp_path):
     assert (tmp_path / "REPORT.md").exists()
 
 
+def test_saliva_gene_set_cli_setting_is_recorded(tmp_path):
+    assert cli.main([
+        "report", "--saliva-gene-set", "published", "--output", str(tmp_path),
+    ]) == 0
+    record = json.loads((tmp_path / "report_run.json").read_text())
+    assert record["settings"]["saliva_gene_set"] == "published"
+
+
 def test_failure_retains_run_record_and_exits_nonzero(monkeypatch, tmp_path):
     def fail(*args):
         raise ValueError("fixture failure")

@@ -21,8 +21,14 @@ jobs:
       - name: Install locked environment
         run: |
           python -m pip install uv==0.13.6
-          uv sync --frozen
+          uv sync --frozen --group notebook
       - name: Unit tests (no public data download)
         run: uv run --frozen pytest -q
       - name: CLI smoke test
         run: uv run --frozen gastric-repro --help
+      - name: Execute reference notebook (offline)
+        run: |
+          uv run --frozen --group notebook jupyter nbconvert --to notebook --execute \
+            notebooks/lopes2025_reproduction.ipynb \
+            --output lopes2025_reproduction.executed.ipynb \
+            --output-dir /tmp --ExecutePreprocessor.timeout=120

@@ -42,6 +42,9 @@ def parser() -> argparse.ArgumentParser:
     result.add_argument("--gsea-permutations", type=int, default=1000)
     result.add_argument("--estimators", type=int, default=200)
     result.add_argument("--jobs", type=int, default=1)
+    result.add_argument("--saliva-gene-set", choices=("discovered", "published"),
+                        default="discovered",
+                        help="Saliva model candidates: discovered DEGs or the published 14-gene panel")
     for ontology in ("bp", "cc", "mf"):
         result.add_argument(f"--go-{ontology}", type=Path,
                             help="Local GMT snapshot; supply all three or use cached GO 2023 downloads")

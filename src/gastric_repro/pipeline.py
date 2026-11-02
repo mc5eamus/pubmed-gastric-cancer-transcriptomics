@@ -34,10 +34,13 @@ class Settings:
     jobs: int = 1
     allow_series_matrix: bool = False
     cdf: Path | None = None
+    saliva_gene_set: str = "discovered"
 
     def __post_init__(self):
         if not 0 <= self.seed <= 2**32 - 1:
             raise ValueError("seed must fit in an unsigned 32-bit integer")
+        if self.saliva_gene_set not in {"discovered", "published"}:
+            raise ValueError("saliva_gene_set must be 'discovered' or 'published'")
         if self.folds < 2 or not 1 <= self.candidates <= 10:
             raise ValueError("folds must be >= 2; candidates must be in [1, 10]")
         if min(self.repeats, self.bootstrap, self.splits, self.permutations,
@@ -203,6 +206,19 @@ def model_options(settings: Settings) -> dict:
                 n_jobs=settings.jobs)
 
 
+def saliva_model_features(expression: pd.DataFrame, de: pd.DataFrame, gene_set: str) -> list[str]:
+    if gene_set == "discovered":
+        features = de.index[de.is_deg].tolist()
+    elif gene_set == "published":
+        features = list(SALIVA_GENES)
+    else:
+        raise ValueError("saliva gene set must be 'discovered' or 'published'")
+    missing = sorted(set(features) - set(expression.index))
+    if missing:
+        raise ValueError(f"Saliva gene set is missing from expression: {missing}")
+    return features
+
+
 def evaluate_scenario(settings, predictions, labels, scenario, accession, subdir="validation"):
     from gastric_repro.metrics import evaluate_predictions
 
@@ -266,7 +282,11 @@ def ml_stage(settings: Settings) -> dict:
     for accession, scenario, top_n in (("GSE66229", "A", 7), ("GSE64951", "D", None)):
         expression, labels = cohorts[accession]
         de = read_de(settings, accession)
-        features = de.index[de.is_deg].tolist()
+        if accession == "GSE64951":
+            features = saliva_model_features(expression, de, settings.saliva_gene_set)
+            top_n = len(features)
+        else:
+            features = de.index[de.is_deg].tolist()
         if not features:
             raise ValueError(f"{accession}: no DEGs; cannot fit paper-like models")
         result = fit_models(
