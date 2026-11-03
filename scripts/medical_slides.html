@@ -1,0 +1,223 @@
+<style id="medical-layout">
+  .reveal h1 { font-size: 47px; line-height: 1.08; margin-top: 16px; letter-spacing: -.035em; }
+  .reveal .subhead { font-size: 24px; margin-top: 12px !important; max-width: 1170px; color: var(--cp-text-soft); }
+  .reveal .body { margin-top: 22px; }
+  .reveal .footer { margin-top: 16px; padding-top: 12px; font-size: 16px; color: var(--cp-text-soft); }
+  .medical-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  .medical-three { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .medical-card { border: 1px solid var(--cp-border); border-radius: 16px; background: var(--cp-surface); padding: 24px; }
+  .medical-card h2 { font-size: 29px; line-height: 1.15; }
+  .medical-card p { font-size: 24px; line-height: 1.4; margin-top: 18px; color: var(--cp-text-soft); }
+  .medical-card strong, .medical-accent { color: var(--cp-accent); }
+  .medical-card .number { font-size: 64px; color: var(--cp-accent); }
+  .medical-table { width: 100%; border-collapse: collapse; font-size: 25px; }
+  .medical-table th, .medical-table td { text-align: left; padding: 16px 12px; border-bottom: 1px solid var(--cp-border); }
+  .medical-table th { font-size: 19px; text-transform: uppercase; letter-spacing: .06em; color: var(--cp-text-soft); }
+  .medical-table small { display: block; font-size: 18px; line-height: 1.25; color: var(--cp-text-soft); }
+  .medical-plot { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; }
+  .medical-plot > svg { width: 100%; height: 100%; max-height: 100%; overflow: hidden; }
+  .medical-figure-row { display: grid; grid-template-columns: 1.65fr 1fr; gap: 28px; height: 100%; }
+  .medical-figure-row figure, .medical-wide-figure { margin: 0; height: 100%; display: flex; flex-direction: column; min-height: 0; }
+  .medical-figure-row img { width: 100%; flex: 1; min-height: 0; object-fit: contain; background: var(--cp-surface); border-radius: .625rem; }
+  .medical-wide-figure img { width: 100%; flex: 1; min-height: 0; object-fit: contain; background: var(--cp-surface); border-radius: .625rem; }
+  .medical-image-button { display: flex; flex: 1; min-height: 0; width: 100%; padding: 0; border: 0; background: var(--cp-surface); cursor: zoom-in; border-radius: .625rem; }
+  .medical-zoom-image { display: block; width: 100%; height: auto; }
+  #heatmap-dialog { width: min(1800px, 96vw); max-width: 96vw; }
+  .medical-dialog { width: min(1800px, 96vw); max-width: 96vw; }
+  .medical-original-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; height: 100%; }
+  .medical-original-pair figure { margin: 0; min-height: 0; display: flex; flex-direction: column; }
+  .medical-original-pair img { width: 100%; flex: 1; min-height: 0; object-fit: contain; background: var(--cp-surface); border-radius: .625rem; }
+  .medical-original-pair figcaption { font-size: 21px; line-height: 1.35; color: var(--cp-text-soft); margin-top: 12px; }
+  .medical-chart-heading { font-size: 25px !important; margin-bottom: 10px !important; }
+  .medical-toolbar-row { display: flex; gap: 12px; margin-top: 14px; align-items: center; }
+  .medical-toolbar-row .chart-action { font-size: 18px; padding: 10px 12px; }
+  .medical-go-layout { display: grid; grid-template-columns: 1.1fr 1fr; gap: 28px; height: 100%; }
+  .medical-go-layout .medical-table { font-size: 23px; }
+  .medical-go-layout .medical-table th, .medical-go-layout .medical-table td { padding: 12px 8px; }
+  .medical-go-layout .medical-card p { font-size: 21px; }
+  .medical-figure-row figcaption, .medical-wide-figure figcaption { font-size: 20px; line-height: 1.35; color: var(--cp-text-soft); margin-top: 12px; }
+  .medical-side { display: flex; flex-direction: column; justify-content: center; gap: 20px; }
+  .medical-side .medical-card { padding: 20px; }
+  .medical-side p { font-size: 22px; margin-top: 12px; }
+  .medical-side .chart-action { align-self: start; }
+  .medical-pill { display: inline-block; font-size: 18px; border: 1px solid var(--cp-border-strong); border-radius: .625rem; padding: 8px 12px; color: var(--cp-text-soft); }
+  .medical-note { font-size: 22px; line-height: 1.4; color: var(--cp-text-soft); margin-top: 20px !important; }
+  .medical-protocol { display: grid; grid-template-columns: 190px 1fr 1fr; gap: 0; font-size: 22px; line-height: 1.3; }
+  .medical-protocol > div { padding: 12px; border-bottom: 1px solid var(--cp-border); }
+  .medical-protocol .label { color: var(--cp-accent); font-weight: 600; }
+  .medical-protocol .column-heading { color: var(--cp-text-soft); font-size: 20px; font-weight: 600; }
+  .medical-stage { font-size: 38px; line-height: 1.25; margin-top: 0 !important; }
+  .medical-stage small { font-size: 24px; display: block; color: var(--cp-text-soft); margin-top: 12px; }
+  .medical-summary { display: flex; align-items: center; gap: 22px; margin-top: 16px; font-size: 23px; }
+  .medical-summary b { color: var(--cp-accent); }
+  @media print {
+    .reveal h1 { font-size: 47px !important; }
+    .reveal .subhead { font-size: 24px !important; }
+    .medical-plot, .medical-figure-row, .medical-wide-figure { height: 100%; }
+  }
+</style>
+<dialog id="heatmap-dialog" aria-labelledby="heatmap-heading">
+  <div class="panel-top"><div><h2 id="heatmap-heading">Original saliva heatmap / full-resolution inspection</h2><div class="panel-caption">37 DEGs, 94 samples; row z-score -3 to +3. Input order, no clustering.</div></div><button class="close-panel" type="button" data-close="heatmap-dialog">Close</button></div>
+  <img class="medical-zoom-image" src="__HEATMAP_PNG__" alt="Full-resolution original reproduction heatmap with accession and gene labels.">
+  <p class="panel-caption">Full-cohort-selected genes: descriptive expression structure, not held-out classification.</p>
+</dialog>
+<dialog id="tissue-dialog" class="medical-dialog" aria-labelledby="tissue-heading">
+  <div class="panel-top"><div><h2 id="tissue-heading">Original tissue heatmap / 400 samples</h2><div class="panel-caption">Top 50 tissue DEGs by absolute moderated t; row z-scores -3 to +3. Input order, no clustering.</div></div><button class="close-panel" type="button" data-close="tissue-dialog">Close</button></div>
+  <img id="tissue-heatmap" class="medical-zoom-image" src="__TISSUE_HEATMAP_PNG__" alt="Original completed tissue reproduction heatmap: top 50 DEGs across 400 accession-labeled samples, with input order preserved.">
+  <p class="panel-caption">Four median-polish nonconvergence warnings were emitted during raw processing; their count does not identify affected cohorts or probe sets. Numerical affy parity is unestablished.</p>
+</dialog>
+<dialog id="go-dialog" class="medical-dialog" aria-labelledby="go-heading">
+  <div class="panel-top"><div><h2 id="go-heading">Computed GO preranked enrichment / original figures</h2><div class="panel-caption">Top four significant terms per ontology by |NES|; GO 2023, 1,000 permutations. Original scientific colors retained.</div></div><button class="close-panel" type="button" data-close="go-dialog">Close</button></div>
+  <h3>Gastric tissue</h3><img id="tissue-go" class="medical-zoom-image" src="__TISSUE_GO_PNG__" alt="Computed tissue GO enrichment figure showing leading biological process, cellular component and molecular function terms and normalized enrichment scores.">
+  <h3>Cell-free saliva</h3><img id="saliva-go" class="medical-zoom-image" src="__SALIVA_GO_PNG__" alt="Computed saliva GO enrichment figure showing significant negative normalized enrichment scores across all three ontologies.">
+  <p class="panel-caption">gseapy permutation FDR is not clusterProfiler adjusted P. Zero empirical FDR entries are finite-permutation estimates, not mathematical zero.</p>
+</dialog>
+<dialog id="model-dialog" class="medical-dialog" aria-labelledby="model-heading">
+  <div class="panel-top"><div><h2 id="model-heading">Completed model scenarios / original computed figures</h2><div class="panel-caption">Discovered panels; full-cohort DE precedes splitting. Not robustness-corrected. Original scientific colors retained.</div></div><button class="close-panel" type="button" data-close="model-dialog">Close</button></div>
+  <h3>One completed leakage subcheck / tissue RF only</h3>
+  __LEAKAGE_CHECK_PLOT__
+  <p class="panel-caption">The same 120 holdout IDs were verified. Fold-local DE/selection changes tissue RF AUC from 0.9970 to 0.9948; full-cohort RMA remains transductive. This is not a completed robustness verdict. Split resampling and the other checks are still incomplete.</p>
+  <h3>AUC and conditional bootstrap intervals</h3><img id="model-auc" class="medical-zoom-image" src="__MODEL_AUC_PNG__" alt="Original computed model AUC and 95 percent bootstrap intervals across all five evaluation cohorts in scenarios A to D.">
+  <h3>ROC curves from actual predictions</h3><img id="model-roc" class="medical-zoom-image" src="__MODEL_ROC_PNG__" alt="Original ROC curves calculated from held-out or external predictions; saliva SVM AUC remains 0.311, without inversion.">
+  <p class="panel-caption">AUCs independently recomputed from stored predictions match the source metrics. Intervals use 2,000 stratified bootstrap replicates, conditional on fitted models. The ROC figure's in-progress label describes its checkpoint; no final robustness result is implied.</p>
+</dialog>
+<div class="slides">
+  <section aria-labelledby="slide-1-title" data-source="Lopes et al. (2025), Introduction and Conclusions; REPORT.md, completed raw saliva analysis and interpretation limits.">
+    <div class="eyebrow"><span class="chapter">01 / Clinical context</span><span class="badge computed">Partial reproduction / medical draft</span></div>
+    <h1 id="slide-1-title">A non-invasive sample. <em>A translational challenge.</em></h1>
+    <p class="subhead">Gastric cancer (GC): can salivary transcriptomics support earlier detection?</p>
+    <div class="body">
+      <p class="medical-stage">From gastric mucosa to a saliva-based liquid biopsy.<small>Accessible sampling is attractive; diagnostic validity must still be established.</small></p>
+      <div class="medical-grid" style="margin-top: 28px">
+        <div class="medical-card"><h2>Why this paper matters</h2><p>Lopes et al. compare GC-associated tissue and saliva expression, then evaluate whether <strong>saliva requires its own diagnostic signature</strong>.</p></div>
+        <div class="medical-card"><h2>What reproduction asks</h2><p>Do independent preprocessing and statistical analysis recover the signals, and do prediction claims survive validation safeguards?</p></div>
+      </div>
+    </div>
+    <div class="footer"><span>Lopes et al., Scientific Reports 15, 18491 (2025). Raw processing, DE and GO completed; modeling and robustness ongoing.</span><span class="position">STAGE</span></div>
+    <aside class="notes"><p>Set the clinical stage before introducing computational methods. Endoscopy and histopathology remain central to GC diagnosis; this paper does not establish their replacement. Saliva is an accessible liquid-biopsy specimen, but tissue expression and salivary expression need not represent the same biological processes.</p><p>The translational question is whether a GC-associated salivary transcriptomic signature can discriminate cases from controls. Do not equate retrospective case-control discrimination with early-stage screening utility. Original GEO data access recovered during the isolated cloud retry. Raw preprocessing of all four cohorts, differential expression and GO/GSEA are now completed. Model fitting and cohort-scale robustness are still pending. Both the original saved saliva outputs and new cloud-computed evidence are identified in the presentation provenance.</p></aside>
+  </section>
+  <section aria-labelledby="slide-2-title" data-source="Publication, Methods and scenarios A-D; REPORT.md cohort metadata audit; GEO accessions GSE66229, GSE64951, GSE54129 and GSE13911.">
+    <div class="eyebrow"><span class="chapter">02 / Study architecture</span><span class="badge">Published design / metadata verified</span></div>
+    <h1 id="slide-2-title">Four cohorts. <em>Two biological compartments.</em></h1>
+    <p class="subhead">Internal modeling, external tissue validation and cross-compartment transfer.</p>
+    <div class="body">
+      <table class="medical-table"><thead><tr><th>Dataset</th><th>Compartment</th><th>GC / control</th><th>Published role</th></tr></thead><tbody>
+        <tr><td>GSE66229<small>400 samples</small></td><td>Gastric tissue</td><td>300 / 100</td><td>Scenario A: internal tissue</td></tr>
+        <tr><td class="medical-accent">GSE64951<small>94 samples</small></td><td>Saliva</td><td>63 / 31</td><td>Scenario D: saliva modeling</td></tr>
+        <tr><td>GSE54129<small>132 samples; China</small></td><td>Gastric tissue</td><td>111 / 21</td><td>Scenario B: external tissue</td></tr>
+        <tr><td>GSE13911<small>69 samples; Italy</small></td><td>Gastric tissue</td><td>38 / 31</td><td>Scenario B: external tissue</td></tr>
+      </tbody></table>
+      <p class="medical-note">Scenario C applies tissue models to saliva. These are not paired tissue-saliva specimens from the same individuals.</p>
+    </div>
+    <div class="footer"><span>Counts are samples, not necessarily unique patients. No independent external saliva cohort was established.</span><span class="position">COHORTS</span></div>
+    <aside class="notes"><p>The publication develops models using tissue or saliva, with a stratified 70/30 split and repeated cross-validation in training. Scenario B evaluates source-trained tissue models directly in external tissue cohorts; scenario C transfers tissue models to saliva, and scenario D develops saliva-specific models. The Chinese and Italian cohorts externally validate tissue models, not the saliva classifier.</p><p>Some tissue controls are adjacent or patient-matched non-cancer tissue. Cohort counts must not be interpreted as independent unique-patient counts, and the separate saliva and tissue studies are not paired-compartment sampling. GSE66229 is a SuperSeries; duplicate tumor/normal subseries ingestion must be avoided. Metadata counts have been verified, but a metadata audit is not raw-data normalization or numerical replication.</p></aside>
+  </section>
+  <section aria-labelledby="slide-3-title" data-source="Publication, Methods; REPORT.md assumptions and deviations; src/gastric_repro/rma.py, de.py and pipeline.py.">
+    <div class="eyebrow"><span class="chapter">03 / Analytical protocol</span><span class="badge computed">Independent implementation</span></div>
+    <h1 id="slide-3-title">Reproduce the protocol. <em>Do not force the numbers.</em></h1>
+    <p class="subhead">Affymetrix HG-U133 Plus 2.0 microarrays, gene annotation and moderated differential expression.</p>
+    <div class="body">
+      <div class="medical-protocol">
+        <div></div><div class="column-heading">PUBLICATION</div><div class="column-heading">REPRODUCTION</div>
+        <div class="label">Preprocessing</div><div>R / affy RMA; probe-to-gene annotation</div><div>Python PM-only RMA; explicit mapping and duplicate-probe rules</div>
+        <div class="label">DE analysis</div><div>limma; BH-adjusted P &lt; 0.05 and <span style="white-space: nowrap">|log2FC| &gt; 1</span></div><div>Empirical-Bayes moderated two-group OLS; same strict thresholds</div>
+        <div class="label">Prediction</div><div>RF, GBM, DT, SVM; 70/30 split; 10-fold CV repeated 5 times</div><div>Implemented, but cohort-scale model evaluation has not run</div>
+        <div class="label">Enrichment</div><div>clusterProfiler / GO GSEA</div><div>Completed gseapy prerank; GO 2023; 1,000 permutations</div>
+      </div>
+      <p class="medical-note">Python RMA and moderated DE have not been shown numerically equivalent to affy / limma.</p>
+    </div>
+    <div class="footer"><span>RMA = robust multi-array average; BH = Benjamini-Hochberg; DE = differential expression.</span><span class="position">METHODS</span></div>
+    <aside class="notes"><p>Use the publication's terminology, while being precise about the independent implementation. PM-only raw RMA includes background correction, quantile normalization and summarization. Two-group empirical-Bayes moderated OLS borrows information across genes to stabilize residual variance, conceptually analogous to limma but not proven numerically identical.</p><p>All four completed normalization cohorts use raw-CEL-derived log2 expression without processed-matrix fallback. Four RuntimeWarnings indicate median polish reached its 50-iteration limit at tolerance 1e-6; logs do not identify probe sets or cohorts, and four warnings do not mean exactly four affected probe sets. Numerical affy parity remains unestablished. Filtering uses the global matrix median with declared alternatives. Mapping and implementation differences are plausible explanations, not proven causes of discrepancies. Saliva model candidates are discovered DEGs, not a silently imposed published panel.</p></aside>
+  </section>
+  <section aria-labelledby="slide-4-title" data-source="reference/computed/GSE64951/summary.json and filter_sensitivity.csv; new presentation/filter_sensitivity.svg and provenance.json; REPORT.md saliva checkpoint table.">
+    <div class="eyebrow"><span class="chapter">04 / Preprocessing concordance</span><span class="badge computed">Measured saliva outputs</span></div>
+    <h1 id="slide-4-title">The gene universe <em>is an analytical choice.</em></h1>
+    <p class="subhead">Mapped genes: 21,367 published versus 20,953 computed. Default retention: 20,407 versus 20,527.</p>
+    <div class="body"><div class="medical-plot" id="filter-figure">__FILTER_SVG__</div></div>
+    <div class="footer"><span>The alternative bars show retained-count sensitivity, not alternative DEG sets or predictive performance.</span><span class="position">ACTUAL DATA</span></div>
+    <aside class="notes"><p>This is a new visualization of the saved, completed saliva filter sensitivity analysis. All three bars use a common zero-to-22,000 scale; the dashed line is the publication's retained count. The default keeps genes with any sample above the global matrix median. Gene mean above the median retains 11,171; at least half the samples above the median retains 10,014. These alternatives were declared and their counts measured.</p><p>The default yields 20,527 genes, 120 more than the publication. It was not adjusted to hit a target. The starting annotation universe is also different: 20,953 versus 21,367. These counts demonstrate sensitivity of feature eligibility; they do not establish how alternative filtering changes DEGs, enrichment or AUC. Input hashes and generator provenance accompany the derived figures.</p></aside>
+  </section>
+  <section aria-labelledby="slide-5-title" data-source="Completed retry-20261102 gene_counts.csv; original tissue volcano and hash-verified saliva volcano; publication Figure 3 and REPORT.md published counts.">
+    <div class="eyebrow"><span class="chapter">05 / Differential expression</span><span class="badge computed">Original computed volcano plots</span></div>
+    <h1 id="slide-5-title">The direction agrees. <em>The DEG count does not.</em></h1>
+    <p class="subhead">Both contrasts: GC minus control; strict |log2FC| &gt; 1 and BH-adjusted P &lt; 0.05. Axes differ.</p>
+    <div class="body">
+      <div class="medical-original-pair" style="height: 350px">
+        <figure><h2 class="medical-chart-heading">Tissue: __TISSUE_DEGS__ DEGs / paper __PAPER_TISSUE_DEGS__</h2><img id="medical-tissue-volcano" src="__TISSUE_VOLCANO_PNG__" alt="Original computed tissue volcano: __TISSUE_UP__ upregulated and __TISSUE_DOWN__ downregulated genes, versus published __PAPER_TISSUE_UP__ up and __PAPER_TISSUE_DOWN__ down."><figcaption>__TISSUE_UP__ up / __TISSUE_DOWN__ down; paper __PAPER_TISSUE_UP__ / __PAPER_TISSUE_DOWN__.</figcaption></figure>
+        <figure><h2 class="medical-chart-heading">Saliva: __SALIVA_DEGS__ DEGs / paper __PAPER_SALIVA_DEGS__</h2><img id="medical-volcano" src="__VOLCANO_PNG__" alt="Original computed saliva volcano: __SALIVA_DEGS__ significant downregulated genes, including all 14 published genes."><figcaption>All down; 14 / 14 published genes recovered.</figcaption></figure>
+      </div>
+      <div class="medical-toolbar-row"><button id="plots-button" class="chart-action" type="button" aria-haspopup="dialog" aria-controls="plots-dialog">Paper vs reproduced saliva volcano</button><span class="tiny">Original scientific colors and axes preserved.</span></div>
+    </div>
+    <div class="footer"><span>Same public saliva cohort; independent analytical reproduction, not new-patient validation.</span><span class="position">ACTUAL DATA</span></div>
+    <aside class="notes"><p>These are original full tested-gene volcano plots, generated by completed raw-derived DE analyses. Tissue retains __TISSUE_RETAINED__ genes versus __PAPER_TISSUE_RETAINED__ published and yields __TISSUE_DEGS__ DEGs (__TISSUE_UP__ up, __TISSUE_DOWN__ down) versus __PAPER_TISSUE_DEGS__ (__PAPER_TISSUE_UP__ up, __PAPER_TISSUE_DOWN__ down). Saliva retains 20,527 and yields __SALIVA_DEGS__ downregulated DEGs, including all 14 published genes. Both cohorts map 20,953 genes.</p><p>Group 1 is GC and group 0 is control. Negative log2FC indicates lower expression in GC. Y is -log10 BH-adjusted P, not raw P. Tissue and saliva plots retain different axes, so do not equate visual heights across panels. The modal preserves publication Figure 3D for the original saliva comparison; its statistical quantities and implementations are not assumed numerically matched. This is partial concordance, not exact numerical replication or independent new-patient validation.</p></aside>
+  </section>
+  <section aria-labelledby="slide-6-title" data-source="Actual reference/computed/GSE64951/heatmap.png; src/gastric_repro/de.py heatmap; manifest.csv, provenance.json and summary.json.">
+    <div class="eyebrow"><span class="chapter">06 / Expression structure</span><span class="badge computed">Original reproduction heatmap</span></div>
+    <h1 id="slide-6-title">An expression pattern <em>is not a diagnostic classifier.</em></h1>
+    <p class="subhead">The 37 computed DEGs across all 94 saliva samples, ranked by absolute moderated t statistic.</p>
+    <div class="body">
+      <figure class="medical-wide-figure"><button id="heatmap-button" class="medical-image-button" type="button" aria-haspopup="dialog" aria-controls="heatmap-dialog" aria-label="Inspect the original heatmap at full resolution"><img id="medical-heatmap" src="__HEATMAP_PNG__" alt="Original reproduction heatmap of 37 saliva DEGs across 94 accession-labeled samples, row-z-scored from minus 3 to plus 3; input order is preserved, without clustering."></button><figcaption>Row z-scores -3 to +3; input order, no clustering. Select the plot to inspect full-resolution labels.</figcaption></figure>
+    </div>
+    <div class="footer"><span>Full-cohort-selected genes; not held-out discrimination.</span><button id="tissue-button" class="chart-action" type="button" aria-haspopup="dialog" aria-controls="tissue-dialog">Inspect tissue heatmap</button></div>
+    <aside class="notes"><p>This is the original heatmap produced by the reproduction, not a schematic. All 37 DEGs fit under the plotting limit of 50. Rows are ranked by descending absolute moderated t statistic. Each row is standardized to a z-score, and the color scale is displayed from -3 to +3; colors therefore compare relative expression within each gene, not absolute abundance across genes.</p><p>The plot preserves input column order and displays accessions. It has no dendrogram or unsupervised clustering, so do not describe it as a discovered patient partition. Clinical labels are in the manifest, not inferred from accession numbers. The DEGs were selected on the complete case-control cohort. A heatmap of those same samples is a descriptive view and cannot demonstrate out-of-sample diagnostic performance. Original scientific colors are intentionally preserved.</p></aside>
+  </section>
+  <section aria-labelledby="slide-7-title" data-source="Actual reference/computed/GSE64951/degs.csv and summary.json; new presentation/gene_effects.svg and provenance.json; publication's 14-gene saliva signature.">
+    <div class="eyebrow"><span class="chapter">07 / Signature concordance</span><span class="badge computed">Measured gene-level effects</span></div>
+    <h1 id="slide-7-title">Complete recovery. <em>Incomplete numerical agreement.</em></h1>
+    <p class="subhead">14 / 14 saliva genes recovered; 23 additional. Computed tissue-saliva overlap: __OVERLAP_GENES__; paper: zero.</p>
+    <div class="body"><div class="medical-plot" id="effects-figure">__EFFECTS_SVG__</div></div>
+    <div class="footer"><span>DEG-only display, sorted by log2FC. No error bars or biological independence are claimed.</span><span class="position">ACTUAL DATA</span></div>
+    <aside class="notes"><p>This new effect-size figure reads each exact log2FC from the saved DEG table. Filled rose circles identify the 14 publication genes: ANKRD37, BAG3, DSP, FRMD4B, JMJD1C, NAA20, RND3, SDR16C5, SEPTIN10, TMPRSS11B, TUFT1, ZBED2, ZFAND2A and ZHX1. Hollow squares identify the 23 additional significant genes. All effect sizes are computed, not published estimates; no confidence intervals are invented.</p><p>The completed tissue-saliva overlap is two genes, GJB2 and MMP12, both among the additional saliva DEGs. The publication reported zero overlap. This is an analytical discrepancy, not proof of a shared causal mechanism or tissue origin for salivary RNA. A larger set is not automatically better biological discovery. Full overlap records are transferred and SHA256-verified locally.</p></aside>
+  </section>
+  <section aria-labelledby="slide-8-title" data-source="Publication Table 3 and metric_targets.csv versus completed retry-20261102/computed_metrics.csv; original model-auc.png and model-roc.png; transfer provenance. Full-cohort-DE branch, not robustness-corrected.">
+    <div class="eyebrow"><span class="chapter">08 / Diagnostic discrimination</span><span class="badge computed">Completed models / robustness pending</span></div>
+    <h1 id="slide-8-title">Recovered genes. <em>Unreproduced discrimination.</em></h1>
+    <p class="subhead">Scenario D: 37 discovered saliva DEGs; 29-sample holdout. Publication: 14-gene panel.</p>
+    <div class="body">
+      <div class="medical-plot" id="auc-figure" style="height: 320px">__SALIVA_AUC_PLOT__</div>
+      <div class="medical-toolbar-row">
+        <button id="model-button" class="chart-action" type="button" aria-haspopup="dialog" aria-controls="model-dialog">Inspect actual ROC curves and all scenarios</button>
+        <span class="medical-pill">SVM sensitivity: 0 / 19 GC at threshold 0.5</span>
+      </div>
+      <p class="medical-note">Full-cohort DE risks selection leakage. Bootstrap CIs condition on fitted models, not the entire pipeline.</p>
+    </div>
+    <div class="footer"><span>Different discovered panels and implementations; no AUC inversion or outcome relabeling. No external saliva validation.</span><span class="position">ACTUAL COMPARISON</span></div>
+    <aside class="notes"><p>Paired points and 95% CIs compare publication Table 3 with actual saliva held-out estimates. Computed AUCs are RF 0.721, GBM 0.684, DT 0.668 and SVM 0.311. Published SVM AUC is 0.868 (0.721-0.974); computed SVM is 0.311 (0.084-0.558). All axes span zero to one. The poor SVM result is not inverted, relabeled, or substituted with another model. The modal includes genuine original ROC curves and all scenario AUCs, independently checked against stored predictions.</p><p>The saliva holdout contains 19 GC and 10 control samples. At threshold 0.5, SVM predicts all as control: sensitivity 0, specificity 1, accuracy 10/29. PPV and LR+ are undefined, not zero. Reproduction uses all 37 discovered DEGs rather than the fixed published 14. Tissue selected CEMIP, ADIPOQ, LIFR, PACC1, ESM1, GPX3 and TMT1A; only ESM1 and TMT1A match the published seven. Internal tissue AUCs are 0.967-0.997, external Chinese tissue 0.703-0.839, external Italian tissue 0.684-0.986; tissue-to-saliva 0.458-0.500.</p><p>These are the faithful full-cohort-DE branch, with selection leakage, not robustness-corrected estimates. CIs use 2,000 stratified bootstraps conditional on the fitted model and omit feature-selection/tuning variability. Cohort-wide RMA remains transductive. Robustness remains incomplete; its live process state is unverified after remote continuation-message admission failed. No independent clinical saliva validation is established.</p></aside>
+  </section>
+  <section aria-labelledby="slide-9-title" data-source="Completed retry-20261102/go_summary.json, original tissue-go.png and saliva-go.png; source GO tables/provenance remain in the cloud execution; publication Figure 4.">
+    <div class="eyebrow"><span class="chapter">09 / Biological interpretation</span><span class="badge computed">Completed GO preranked enrichment</span></div>
+    <h1 id="slide-9-title">Pathway signals recur. <em>Enrichment claims diverge.</em></h1>
+    <p class="subhead">Tissue includes DNA replication signals; saliva has 88 significant BP terms, unlike the publication's reported absence.</p>
+    <div class="body">
+      <div class="medical-go-layout">
+        <div>
+          <table class="medical-table"><thead><tr><th>Significant terms</th><th>Tissue</th><th>Saliva</th></tr></thead><tbody>
+            <tr><td>Biological process</td><td>__TISSUE_BP_COUNT__</td><td class="medical-accent">__SALIVA_BP_COUNT__</td></tr>
+            <tr><td>Cellular component</td><td>__TISSUE_CC_COUNT__</td><td>__SALIVA_CC_COUNT__</td></tr>
+            <tr><td>Molecular function</td><td>__TISSUE_MF_COUNT__</td><td>__SALIVA_MF_COUNT__</td></tr>
+          </tbody></table>
+          <p class="medical-note">All significant saliva terms have negative NES. Different FDR methods limit numerical comparability.</p>
+          <button id="go-button" class="chart-action" style="margin-top: 16px" type="button" aria-haspopup="dialog" aria-controls="go-dialog">Inspect original computed GO figures</button>
+        </div>
+        <div class="medical-card"><h2>Leading computed BP terms</h2><p>Tissue: DNA metabolic process <strong>NES __TISSUE_DNA_NES__</strong>; DNA replication <strong>__TISSUE_REPLICATION_NES__</strong>.</p><p>Saliva: COPII-coated vesicle budding <strong>NES __SALIVA_COPII_NES__</strong>; translational initiation regulation <strong>__SALIVA_TRANSLATION_NES__</strong>.</p><p>GO 2023; signed moderated-t ranking; 1,000 permutations.</p></div>
+      </div>
+    </div>
+    <div class="footer"><span>Per-ontology GSEA FDR &lt; 0.05 is not clusterProfiler adjusted P. Zero empirical FDR is not mathematical zero.</span><span class="position">ACTUAL DATA</span></div>
+    <aside class="notes"><p>The completed gseapy 1.3.2 prerank analysis ranks all retained genes by signed moderated t descending, breaking ties by gene name. Parameters: GO 2023 snapshots, seed 2025, 1,000 permutations, min_size 15, max_size 500, one thread. Significant terms at per-ontology FDR below 0.05 are tissue BP/CC/MF 402/71/59, saliva 88/53/39. All significant saliva terms have negative NES. Positive NES is GC-associated and negative NES is control-associated under this contrast.</p><p>Broad tissue replication/cell-cycle biology is consistent with parts of the paper, but saliva's absence of significant BP enrichment is not reproduced. These are not numerically identical methods: gseapy permutation FDR is not clusterProfiler adjusted P. GO version, gene universe, ranking and preprocessing also affect comparisons. Finite-permutation q-values printed as zero are empirical estimates, not mathematical zeros. The original source-verified figures in the modal show the top four significant terms per ontology by absolute NES, not every significant term.</p></aside>
+  </section>
+  <section aria-labelledby="slide-10-title" data-source="Completed retry-20261102 gene_counts.csv, deg_overlap.json, go_summary.json and computed_metrics.csv; transfer provenance. REPORT.md is the earlier audit; robustness remains in progress.">
+    <div class="eyebrow"><span class="chapter">10 / Translational conclusion</span><span class="badge computed">Partial reproduction, explicitly bounded</span></div>
+    <h1 id="slide-10-title">A recovered signature. <em>Not a validated liquid biopsy.</em></h1>
+    <p class="subhead">Analytical concordance, numerical replication and clinical utility are different endpoints.</p>
+    <div class="body">
+      <div class="medical-three">
+        <div class="medical-card"><h2>Measured agreement</h2><p>All four cohorts raw-processed.<br><strong>14 / 14 saliva genes recovered.</strong><br>Tissue replication-related GO signals.</p></div>
+        <div class="medical-card"><h2>Measured deviations</h2><p>Tissue DEGs: <strong>__TISSUE_DEGS__ vs __PAPER_TISSUE_DEGS__</strong>.<br>Saliva: <strong>__SALIVA_DEGS__ vs __PAPER_SALIVA_DEGS__</strong>.<br>Overlap: <strong>__OVERLAP_COUNT__ vs __PAPER_OVERLAP_COUNT__</strong>.<br>Significant saliva BP: <strong>88 vs none</strong>.</p></div>
+        <div class="medical-card"><h2>Clinical requirements</h2><p>Independent prospective saliva validation, intended-use population, early-stage performance and decision utility.</p></div>
+      </div>
+      <p class="medical-note">Models completed: saliva SVM AUC 0.311, not published 0.868. Full robustness results remain unavailable.</p>
+    </div>
+    <div class="footer"><span>Independent implementation, not numerical affy/limma parity. No external saliva validation or screening utility established.</span><span class="position">CONCLUSION</span></div>
+    <aside class="notes"><p>Distinguish analytical agreement from exact replication and clinical utility. Raw RMA completed across 695 samples in four cohorts without fallback. Tissue and saliva DE, GO and model results are now measured, with important deviations in counts, overlap, saliva BP enrichment and saliva classification. Original source records and PNG hashes are preserved locally. Four median-polish nonconvergence warnings remain an interpretation caveat, not an automatic assertion of invalid results or exactly four affected probe sets.</p><p>The full default cloud run has no verified terminal robustness result. One tissue RF same-holdout fold-local-DE subcheck completed: AUC 0.9948 versus faithful-branch 0.9970, with 120 verified identical holdout IDs. The model inspection panel visualizes these point estimates without inventing a fold-local CI. This single result is not a full robustness assessment; split/permutation/stability conclusions remain unavailable. Later continuation-message admission failed, so live process status is unknown, not proof of completion or failure. Supervised full-cohort DE before splitting risks selection leakage; training-local feature selection is needed inside CV, but cohort-wide RMA still uses test-cohort information for transductive preprocessing. Clinical translation further requires independent prospective saliva validation in the intended-use population, calibration, predictive values at screening prevalence, early-stage performance and decision utility. No screening test is validated by recovering a gene list.</p></aside>
+  </section>
+</div>

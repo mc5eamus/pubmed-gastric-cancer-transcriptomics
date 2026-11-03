@@ -1,0 +1,35 @@
+{
+  "check": "selection_leakage",
+  "dataset": "GSE66229",
+  "model": "RF",
+  "status": "completed_single_model_subcheck",
+  "auc": 0.9948148148148148,
+  "paper_like_auc": 0.997037037037037,
+  "same_holdout_verified": true,
+  "holdout_n": 120,
+  "signature": [
+    "ADIPOQ",
+    "RCC2",
+    "PACC1",
+    "GPX3",
+    "ESM1",
+    "ALYREF",
+    "LIFR"
+  ],
+  "metadata": {
+    "scenario": "shared_holdout_fold_local_de_selection",
+    "holdout_used_for_tuning": false,
+    "cv_feature_selection_is_fold_local": true,
+    "ranking_estimators": "fixed parameters, not separately tuned",
+    "no_deg_policy": "constant",
+    "consensus": "RF/GBM primary; DT tie-break; gene ID last",
+    "svm_scaling": true,
+    "svm_kernel": "rbf",
+    "upstream_normalization": "provided; full-cohort RMA is transductive",
+    "fully_inductive_end_to_end": false,
+    "seed": 2025
+  },
+  "source_sha256": "d7fbc4a23af4fd365ecc3f173a52b10c8deeb25b67e88e41b88e75c926a913b7",
+  "predictions_sha256": "fe8c590c3b82194807997108880d5ec5d39346fcdbd495c4f6070043d4e88cf1",
+  "other_checks": "100-split resampling active; not yet complete; no resampling conclusion"
+}

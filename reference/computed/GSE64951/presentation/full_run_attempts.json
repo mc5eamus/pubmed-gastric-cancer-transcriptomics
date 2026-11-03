@@ -1,0 +1,61 @@
+{
+  "record_type": "execution history, not computed biological results",
+  "full_reproduction_status": "blocked; not completed",
+  "existing_saliva_analysis_unchanged": true,
+  "local_attempt": {
+    "available_ram_gib": 0.61,
+    "locked_dependencies_restored": false,
+    "wheel_transport": "Certificate-verified uv, Windows curl and Python urllib attempts failed with TLS handshake errors.",
+    "installed_dependencies": "Installed NumPy and matplotlib differ from the lockfile; gseapy is missing.",
+    "original_geo_annotation_head_status": 403,
+    "original_geo_annotation_range_get_status": 403,
+    "original_tissue_cel_range_get_status": 403,
+    "geo_request_verification": "Default certificate verification, explicit public-data User-Agent and small byte-range GET; no bulk download or access-control bypass."
+  },
+  "remote_attempt": {
+    "session_id": "542e0f00-54be-473b-acfe-792c40edb26f",
+    "execution_commit": "c72855d6729a7c08bf61cccbe1656ce1607e068a",
+    "evidence_level": "Reported by the coordinated execution session; original logs and stage records persist in that session.",
+    "locked_dependencies_restored": true,
+    "restore_command": "uv sync --frozen",
+    "offline_tests_passed": 193,
+    "available_ram_gib_at_start": 6.2,
+    "available_disk_gib": 8.3,
+    "completed_stage": "evidence only; article available, supplement publisher DNS failed",
+    "full_run_status": "failed before large raw CEL downloads",
+    "annotation_failure": {
+      "required_url": "https://ftp.ncbi.nlm.nih.gov/geo/platforms/GPLnnn/GPL570/annot/GPL570.annot.gz",
+      "http_status": 502,
+      "repository_attempts": 3,
+      "independent_secure_curl_attempts": 3
+    },
+    "official_download_route": {
+      "requested_url": "https://www.ncbi.nlm.nih.gov/geo/download/?acc=GPL570&format=file&file=GPL570.annot.gz",
+      "redirect_status": 301,
+      "resolved_url": "https://ftp.ncbi.nlm.nih.gov/geo/platforms/GPLnnn/GPL570/suppl/GPL570.annot.gz",
+      "resolved_http_status": 404,
+      "accepted": false,
+      "reason": "Not the required annotation artifact."
+    },
+    "raw_cel_transport": {
+      "sample": "GSM1523727",
+      "direct_http_status": 502,
+      "official_download_route": "Redirects to the same failing original HTTPS FTP CEL URL.",
+      "large_raw_files_acquired": 0
+    },
+    "source_changes": false,
+    "reduced_settings": false,
+    "processed_matrix_fallback": false,
+    "new_computed_biological_results": false,
+    "persistent_evidence_directory": "results/full-default/",
+    "persistent_evidence_files": [
+      "preparation.json",
+      "execution.log",
+      "run_run.json",
+      "stage_status.json",
+      "resource_probes.json",
+      "evidence/publication_sources.json",
+      "official-route-check/transport_results.json"
+    ]
+  }
+}

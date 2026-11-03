@@ -1,0 +1,639 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="An offline Reveal.js guide to reading the actual saliva heatmap and volcano, with three annotated gene examples per visualization.">
+  <title>Reading the evidence / heatmap and volcano</title>
+  <script>
+    (() => {
+      const param = new URLSearchParams(window.location.search).get("scoutTheme");
+      const theme =
+        param || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+      document.documentElement.setAttribute("data-theme", theme);
+    })();
+  </script>
+  <style id="reveal-core">__REVEAL_CORE__</style>
+  <style>
+    :root {
+      color-scheme: light;
+      --cp-bg: #f7f4ef;
+      --cp-bg-elevated: #fcfbf8;
+      --cp-surface: #ffffff;
+      --cp-surface-soft: #f5f5f5;
+      --cp-border: #dedede;
+      --cp-border-strong: #919191;
+      --cp-text: #242424;
+      --cp-text-muted: #5c5c5c;
+      --cp-text-soft: #6f6f6f;
+      --cp-accent: #b11f4b;
+      --cp-accent-hover: #9a1a41;
+      --cp-accent-soft: rgba(177, 31, 75, 0.08);
+      --cp-accent-fg: #ffffff;
+      --cp-success: #16a34a;
+      --cp-danger: #dc2626;
+      --cp-warning: #f59e0b;
+      --cp-link: #0078d4;
+      --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.12);
+      --cp-overlay: rgba(255, 255, 255, 0.8);
+      --cp-panel: rgba(255, 255, 255, 0.86);
+      --cp-panel-strong: rgba(255, 255, 255, 0.96);
+      --cp-sheen: rgba(255, 255, 255, 0.55);
+      --cp-highlight: rgba(177, 31, 75, 0.12);
+    }
+    html[data-theme="dark"] {
+      color-scheme: dark;
+      --cp-bg: #3d3b3a;
+      --cp-bg-elevated: #343231;
+      --cp-surface: #292929;
+      --cp-surface-soft: #2e2e2e;
+      --cp-border: #474747;
+      --cp-border-strong: #5f5f5f;
+      --cp-text: #dedede;
+      --cp-text-muted: #919191;
+      --cp-text-soft: #b0b0b0;
+      --cp-accent: #fd8ea1;
+      --cp-accent-hover: #fb7b91;
+      --cp-accent-soft: rgba(253, 142, 161, 0.14);
+      --cp-accent-fg: #1a1a1a;
+      --cp-success: #4ade80;
+      --cp-danger: #f87171;
+      --cp-warning: #fbbf24;
+      --cp-link: #4da6ff;
+      --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.32);
+      --cp-overlay: rgba(41, 41, 41, 0.88);
+      --cp-panel: rgba(41, 41, 41, 0.72);
+      --cp-panel-strong: rgba(41, 41, 41, 0.96);
+      --cp-sheen: rgba(255, 255, 255, 0.04);
+      --cp-highlight: rgba(253, 142, 161, 0.12);
+    }
+    * { box-sizing: border-box; }
+    html, body, body.reveal-viewport { margin: 0; background: var(--cp-bg); color: var(--cp-text); }
+    body, button, dialog, .reveal {
+      font-family: "Segoe UI", Aptos, Calibri, -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+    code { font-family: Consolas, "Courier New", Courier, monospace; font-size: .88em; }
+    a { color: var(--cp-link); }
+    button {
+      font: inherit; color: var(--cp-text); background: var(--cp-surface);
+      border: 1px solid var(--cp-border); border-radius: .625rem; padding: 8px 14px; cursor: pointer;
+    }
+    button:hover { border-color: var(--cp-accent); }
+    button:focus-visible, a:focus-visible { outline: 3px solid var(--cp-accent); outline-offset: 4px; }
+    .toolbar {
+      position: fixed; inset: 0 0 auto; z-index: 20; height: 54px;
+      background: var(--cp-bg-elevated); border-bottom: 1px solid var(--cp-border);
+      display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 8px 20px; font-size: 14px;
+    }
+    .toolbar nav { display: flex; gap: 8px; }
+    .toolbar .hint { color: var(--cp-text-muted); margin-left: 16px; }
+    main { position: fixed; inset: 62px 0 16px; }
+    .reveal { height: 100%; color: var(--cp-text); font-size: 28px; line-height: 1.35; }
+    .reveal .slides { text-align: left; }
+    .reveal .slides > section { height: 900px; padding: 36px 40px; }
+    .reveal h1, .reveal h2, .reveal h3, .reveal p, .reveal figure { margin: 0; }
+    .reveal h1 { font-size: 80px; line-height: 1.06; letter-spacing: -.045em; max-width: 1300px; }
+    .reveal h2 { font-size: 54px; line-height: 1.1; letter-spacing: -.03em; margin: 12px 0 16px; }
+    .reveal h3 { font-size: 29px; line-height: 1.2; margin-bottom: 12px; }
+    .eyebrow { text-transform: uppercase; letter-spacing: .14em; color: var(--cp-accent); font-size: 18px; font-weight: 700; }
+    .lede { color: var(--cp-text-muted); font-size: 27px; max-width: 1420px; margin-bottom: 24px !important; }
+    .grid { display: grid; gap: 24px; }
+    .two { grid-template-columns: 1fr 1fr; }
+    .three { grid-template-columns: repeat(3, 1fr); }
+    .plot-layout { grid-template-columns: minmax(0, 1.42fr) minmax(0, 1fr); align-items: start; gap: 32px; }
+    .card { background: var(--cp-surface); border: 1px solid var(--cp-border); border-radius: 16px; padding: 24px; }
+    .card p + p { margin-top: 12px; }
+    .number {
+      display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px;
+      border-radius: .625rem; background: var(--cp-accent); color: var(--cp-accent-fg);
+      font-size: 22px; font-weight: 700; margin-right: 8px;
+    }
+    .label { font-weight: 700; color: var(--cp-accent); }
+    .small { font-size: 22px; color: var(--cp-text-muted); }
+    .caption { font-size: 19px; color: var(--cp-text-muted); margin-top: 12px !important; }
+    .takeaway {
+      margin-top: 24px !important; padding: 16px 20px; border-left: 4px solid var(--cp-accent);
+      background: var(--cp-accent-soft); font-size: 25px;
+    }
+    .original { display: block; width: 100%; height: auto; border-radius: .625rem; }
+    .intro-plots { margin-top: 28px; }
+    .intro-plots .card { padding: 20px; }
+    .intro-plots img { height: 225px; object-fit: contain; background: var(--cp-surface); margin: 12px 0; }
+    .intro-plots h3 { font-size: 30px; }
+    .intro-plots p { font-size: 24px; }
+    .heatmap-map { display: block; width: 100%; height: 365px; background: var(--cp-surface); border-radius: .625rem; }
+    .heatmap-key { margin-top: 20px; }
+    .heatmap-key .card { font-size: 23px; }
+    .inspect { margin-top: 12px; font-size: 18px; }
+    .row-card { padding: 12px 20px; margin-bottom: 16px; }
+    .row-card h3 { font-size: 27px; margin-bottom: 8px; }
+    .row-strip { display: block; width: 100%; height: 28px; border: 1px solid var(--cp-border-strong); }
+    .row-labels { display: flex; justify-content: space-between; font-size: 16px; color: var(--cp-text-muted); margin: 4px 0 6px; }
+    .row-card .reading { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; font-size: 21px; line-height: 1.3; }
+    .volcano-map { display: block; width: 100%; height: 570px; }
+    .plot-layout > figure > .original { height: 570px; object-fit: contain; }
+    .volcano-cards { display: grid; gap: 16px; }
+    .volcano-cards .card { padding: 16px; font-size: 21px; line-height: 1.3; }
+    .volcano-cards .card p + p { margin-top: 8px; }
+    .volcano-cards h3 { font-size: 26px; margin-bottom: 8px; }
+    .volcano-cards .metric { font-size: 19px; color: var(--cp-text-muted); margin-bottom: 8px; }
+    .axis-guide .card { margin-bottom: 16px; padding: 20px; font-size: 24px; }
+    .axis-guide strong { color: var(--cp-accent); }
+    table { width: 100%; border-collapse: collapse; font-size: 26px; margin: 28px 0; }
+    th, td { padding: 16px; text-align: left; border-bottom: 1px solid var(--cp-border); }
+    thead th { color: var(--cp-text-muted); font-size: 20px; background: var(--cp-surface-soft); }
+    tbody th { color: var(--cp-accent); }
+    ul { padding-left: 28px; margin: 12px 0 0; }
+    li { margin-bottom: 16px; }
+    .sources { font-size: 24px; }
+    .sources .card p { margin-bottom: 12px; }
+    .quiz-layout { grid-template-columns: 1fr 1fr; align-items: start; gap: 28px; }
+    .quiz-form fieldset { border: 0; margin: 0; padding: 0; min-width: 0; }
+    .quiz-form legend { font-size: 22px; color: var(--cp-text-muted); margin-bottom: 16px; }
+    .quiz-option {
+      display: flex; align-items: flex-start; gap: 14px; padding: 18px;
+      border: 1px solid var(--cp-border); border-radius: .625rem;
+      background: var(--cp-surface); font-size: 24px; line-height: 1.3;
+      margin-bottom: 12px; cursor: pointer;
+    }
+    .quiz-option:has(input:checked) { border-color: var(--cp-accent); background: var(--cp-accent-soft); }
+    .quiz-option:has(input:focus-visible) { outline: 3px solid var(--cp-accent); outline-offset: 3px; }
+    .quiz-option input { margin-top: 6px; accent-color: var(--cp-accent); flex-shrink: 0; }
+    .quiz-option[data-result="correct"] { border-color: var(--cp-success); }
+    .quiz-option[data-result="incorrect"] { border-color: var(--cp-danger); }
+    .quiz-actions { display: flex; gap: 12px; margin-top: 20px; font-size: 23px; }
+    .quiz-actions button[type="submit"] { background: var(--cp-accent); color: var(--cp-accent-fg); }
+    .quiz-feedback { min-height: 380px; padding: 20px; font-size: 21px; line-height: 1.35; }
+    .quiz-feedback[data-result="correct"] h3 { color: var(--cp-success); }
+    .quiz-feedback[data-result="incorrect"] h3 { color: var(--cp-danger); }
+    .quiz-feedback h4 { font-size: 20px; margin: 12px 0 8px; color: var(--cp-text-muted); }
+    .quiz-lesson { border-top: 1px solid var(--cp-border); margin-top: 14px; padding-top: 12px; }
+    .quiz-solution { display: none; }
+    .reveal .controls { color: var(--cp-accent); }
+    .reveal .progress { color: var(--cp-accent); background: var(--cp-border); }
+    .reveal .slide-number { background: var(--cp-bg-elevated); color: var(--cp-text-muted); font-size: 15px; }
+    dialog {
+      color: var(--cp-text); background: var(--cp-bg-elevated); border: 1px solid var(--cp-border);
+      border-radius: 16px; padding: 24px; width: min(96vw, 1500px); max-height: 92vh;
+    }
+    dialog::backdrop { background: var(--cp-overlay); }
+    .dialog-top { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 16px; }
+    .dialog-top h2 { font-size: 24px; margin: 0; }
+    .dialog-top nav { display: flex; gap: 8px; }
+    .image-scroll { overflow: auto; max-height: 74vh; }
+    .image-scroll img { display: block; width: 100%; height: auto; }
+    .image-scroll.native img { width: auto; max-width: none; }
+    #notes-content { font-size: 22px; line-height: 1.6; }
+    .noscript { padding: 80px 24px; }
+    @media (max-width: 680px) {
+      .toolbar .hint, .brand-subtitle { display: none; }
+      .toolbar { padding: 8px 12px; font-size: 12px; }
+      .toolbar button { padding: 6px 8px; }
+    }
+    @media print {
+      @page { size: landscape; margin: 10mm; }
+      html, body { overflow: visible !important; height: auto !important; }
+      .toolbar, .reveal .controls, .reveal .progress, .reveal .slide-number, dialog, .inspect { display: none !important; }
+      main, .reveal { position: static !important; height: auto !important; overflow: visible !important; }
+      .reveal .slides { position: static !important; width: 1600px !important; height: auto !important; transform: none !important; zoom: .6; }
+      .reveal .slides > section {
+        position: relative !important; display: block !important; visibility: visible !important;
+        opacity: 1 !important; transform: none !important; break-after: page; page-break-after: always;
+      }
+      .reveal .slides > section:last-child { break-after: auto; page-break-after: auto; }
+      .reveal .slides aside.notes { display: none !important; }
+      .quiz-actions, .quiz-feedback { display: none !important; }
+      .quiz-solution { display: block; font-size: 23px; line-height: 1.5; }
+      .quiz-option { background: var(--cp-surface) !important; border-color: var(--cp-border) !important; }
+    }
+  </style>
+</head>
+<body>
+  <header class="toolbar">
+    <div><strong>Reading the evidence</strong><span class="brand-subtitle"> / saliva transcriptomics</span><span class="hint">Arrows: navigate &middot; N: notes &middot; Esc: overview</span></div>
+    <nav aria-label="Presentation tools">
+      <button id="notes-button" type="button">Notes</button>
+      <button id="theme-button" type="button">Switch theme</button>
+      <button id="print-button" type="button">Print</button>
+    </nav>
+  </header>
+  <noscript><p class="noscript">Enable JavaScript to navigate this offline Reveal.js presentation.</p></noscript>
+  <main>
+    <div class="reveal">
+      <div class="slides">
+        <section id="start" aria-labelledby="title-1">
+          <p class="eyebrow">A guided reading / GSE64951 / actual saved results</p>
+          <h1 id="title-1">Read the pattern.<br>Measure the difference.<br>Respect the limits.</h1>
+          <p class="lede" style="margin-top:24px">Two visualizations, three shared genes: YOD1, TMPRSS11B and SPAG9.</p>
+          <div class="grid two intro-plots">
+            <article class="card">
+              <h3>Heatmap / individual samples</h3>
+              <img class="original" src="__HEATMAP_IMAGE__" alt="Original saliva heatmap, with 37 gene rows and 94 sample columns.">
+              <p>Where is each gene relatively high or low?</p>
+            </article>
+            <article class="card">
+              <h3>Volcano / group comparison</h3>
+              <img class="original" src="__VOLCANO_IMAGE__" alt="Original saliva volcano: log2 fold change against minus log10 BH-adjusted p-value.">
+              <p>How large is the difference, and how strong is the evidence?</p>
+            </article>
+          </div>
+          <aside class="notes">This is an interpretation lesson using the checked-in, full-universe saliva analysis, not a new experiment or a live results dashboard. There are 63 gastric-cancer samples and 31 controls. The same three genes will be followed across both visualizations. All figures, annotations, statistics and Reveal.js are bundled for offline use.</aside>
+        </section>
+
+        <section id="heatmap-map" aria-labelledby="title-2">
+          <p class="eyebrow">01 / locate three examples</p>
+          <h2 id="title-2">A heatmap colour is relative to its own row.</h2>
+          <p class="lede">37 genes &times; 94 saliva samples. Red = above that gene's mean; blue = below it; white = near it.</p>
+          <figure>
+            __HEATMAP_OVERVIEW__
+            <figcaption class="caption">Numbered outlines are added teaching annotations. The original image, sample order and colour scale are preserved.</figcaption>
+          </figure>
+          <div class="grid three heatmap-key">
+            <article class="card"><h3><span class="number">1</span>YOD1</h3><p>Compare the two outlined cells: first sample versus GSM1584927 near the right.</p></article>
+            <article class="card"><h3><span class="number">2</span>TMPRSS11B</h3><p>Follow the ninth row across all samples. Look for a broad pattern and exceptions.</p></article>
+            <article class="card"><h3><span class="number">3</span>SPAG9</h3><p>Follow the bottom row. A visible pattern does not tell you its adjusted p-value.</p></article>
+          </div>
+          <button class="inspect" type="button" data-inspect="heatmap">Inspect original heatmap / full resolution</button>
+          <aside class="notes">The row z-score equals normalized log2 expression minus the gene's across-sample mean, divided by its across-sample standard deviation. A z-score of plus two is two standard deviations above that mean, not twofold expression. The colour scale is limited to minus three through plus three. Rows are ordered by absolute moderated t-statistic, not clustered; columns preserve the input order. The original image has no class-annotation strip. Outlines do not imply clusters or statistical intervals.</aside>
+        </section>
+
+        <section id="heatmap-readings" aria-labelledby="title-3">
+          <p class="eyebrow">02 / observation first, interpretation second</p>
+          <h2 id="title-3">Three heatmap readings, without overclaiming.</h2>
+          <p class="lede">Enlarged row strips retain all 94 samples in the original order. Colour readings are qualitative, not recovered numerical z-scores.</p>
+          <article class="card row-card">
+            <h3><span class="number">1</span>YOD1 / compare individuals</h3>
+            __YOD1_STRIP__
+            <div class="row-labels"><span>GSM1584837 &rarr; original sample sequence</span><span>GSM1584930</span></div>
+            <div class="reading">
+              <p><span class="label">Reading:</span> GSM1584837 is light blue; GSM1584927 is dark red.</p>
+              <p><span class="label">Interpretation:</span> Below versus above its own mean. Metadata, not colour, identifies cancer versus control.</p>
+            </div>
+          </article>
+          <article class="card row-card">
+            <h3><span class="number">2</span>TMPRSS11B / follow a pattern</h3>
+            __TMPRSS11B_STRIP__
+            <div class="row-labels"><span>First sample</span><span>Last sample</span></div>
+            <div class="reading">
+              <p><span class="label">Reading:</span> Many earlier cells are blue; later cells are often warmer, with exceptions.</p>
+              <p><span class="label">Interpretation:</span> There is a shared pattern with individual variation, not a perfect sample-by-sample separation.</p>
+            </div>
+          </article>
+          <article class="card row-card">
+            <h3><span class="number">3</span>SPAG9 / similar appearance is not equal evidence</h3>
+            __SPAG9_STRIP__
+            <div class="row-labels"><span>First sample</span><span>Last sample</span></div>
+            <div class="reading">
+              <p><span class="label">Reading:</span> Broad cooler-to-warmer variation resembles the other selected rows.</p>
+              <p><span class="label">Interpretation:</span> SPAG9 only just passes the adjusted-p cutoff in the volcano. A heatmap cannot supply that evidence.</p>
+            </div>
+          </article>
+          <aside class="notes">The sample identities are independently checked in manifest.csv: GSM1584837 is labelled gastric cancer, and GSM1584927 normal. The original heatmap does not display those classes. This deck does not estimate exact z-scores by reading raster colours, nor does it claim the blue and red blocks were discovered by clustering. Strips magnify original row pixels; they are not new expression calculations. Equal reds in different rows represent equal standardized positions, not equal absolute abundance.</aside>
+        </section>
+
+        <section id="heatmap-quiz-scale" aria-labelledby="heatmap-quiz-scale-title">
+          <p class="eyebrow">Heatmap / understanding check / 1 of 2</p>
+          <h2 id="heatmap-quiz-scale-title">The same red does not mean the same amount.</h2>
+          <p class="lede" id="heatmap-scale-scenario">Hypothetical example: in the same sample, gene A and gene B both have row z = +2. Which conclusion must be true?</p>
+          <div class="grid quiz-layout">
+            <form class="quiz-form" data-correct="C" data-lesson="Each row has its own mean and standard deviation. Standardization preserves relative position within a gene, but removes the scale needed for comparisons of absolute abundance across genes.">
+              <fieldset aria-describedby="heatmap-scale-scenario">
+                <legend>Choose the single best answer.</legend>
+                <label class="quiz-option" data-explanation="Equal standardized scores do not imply equal expression. For example, a gene with mean 4 and SD 1 has value 6 at z = +2; a gene with mean 8 and SD 2 has value 12. Both are equally red despite different values on the normalized log2-expression scale."><input type="radio" name="heatmap-scale" value="A" required><span><strong>A.</strong> The two genes have equal expression in this sample.</span></label>
+                <label class="quiz-option" data-explanation="A z-score counts standard deviations, not fold change. The score +2 means two SDs above that gene's mean. It does not give a twofold ratio; on the log2 scale even the expression difference is 2 times the gene-specific SD, which is not supplied here."><input type="radio" name="heatmap-scale" value="B"><span><strong>B.</strong> Each gene is expressed at twice its own average level.</span></label>
+                <label class="quiz-option" data-explanation="By definition, z = (value - row mean) / row SD. Thus +2 places each gene two of its own SDs above its across-sample mean. The genes can still have different expression levels, and neither score alone gives the cancer-control difference or a diagnostic label."><input type="radio" name="heatmap-scale" value="C"><span><strong>C.</strong> Each is two of its own standard deviations above its own across-sample mean.</span></label>
+                <label class="quiz-option" data-explanation="The heatmap contains selected DEGs, but a red cell does not establish that its sample has cancer. Red means above that gene's across-sample mean. Sample identity comes from metadata, and group-average differential expression does not label every individual sample."><input type="radio" name="heatmap-scale" value="D"><span><strong>D.</strong> This sample must have cancer because both selected genes are red.</span></label>
+              </fieldset>
+              <div class="quiz-actions"><button type="submit">Check answer</button><button type="reset">Try again</button></div>
+              <p class="caption">No navigation lock. Try another answer to explore its explanation.</p>
+            </form>
+            <div class="card quiz-feedback" role="status" aria-live="polite" aria-atomic="true"></div>
+            <div class="card quiz-solution"></div>
+          </div>
+          <aside class="notes">This question separates standard deviations, fold change, cross-gene abundance and disease identity. Ask learners to explain what extra information would be required to recover an expression value: the gene's mean and SD on the normalized log2 scale. The numerical example is hypothetical, not a recovered measurement from the figure. Check answer provides a rationale specific to every option; Try again clears only this question.</aside>
+        </section>
+
+        <section id="heatmap-quiz-validation" aria-labelledby="heatmap-quiz-validation-title">
+          <p class="eyebrow">Heatmap / understanding check / 2 of 2</p>
+          <h2 id="heatmap-quiz-validation-title">A striking pattern can still be expected by construction.</h2>
+          <p class="lede" id="heatmap-validation-scenario">These 37 genes were selected using cancer-control differences in the same 94 samples shown in the heatmap. What is the strongest defensible conclusion?</p>
+          <div class="grid quiz-layout">
+            <form class="quiz-form" data-correct="B" data-lesson="Separate exploration from validation. A convincing display of already-selected differences is not an independent test; prediction needs leakage-controlled evaluation and external validation.">
+              <fieldset aria-describedby="heatmap-validation-scenario">
+                <legend>Choose the single best answer.</legend>
+                <label class="quiz-option" data-explanation="The original heatmap does not cluster samples: it preserves input order and has no dendrogram or class-annotation strip. Visible blocks therefore cannot be described as automatically discovered disease clusters. Ordering must be checked before interpreting adjacent columns as a biological subgroup."><input type="radio" name="heatmap-validation" value="A" required><span><strong>A.</strong> The coloured blocks show that unsupervised clustering discovered two disease groups.</span></label>
+                <label class="quiz-option" data-explanation="The heatmap illustrates variation and shared patterns in this cohort, but the genes were selected because they already differ in these samples. That selection makes apparent separation partly expected. This view alone supplies neither an independent performance estimate nor evidence that a classifier will generalize to new patients."><input type="radio" name="heatmap-validation" value="B"><span><strong>B.</strong> The plot illustrates a selected cohort pattern, not independent evidence of diagnostic accuracy.</span></label>
+                <label class="quiz-option" data-explanation="Row z-scoring rescales expression; it does not undo the use of all cohort labels to choose the genes. Information leakage can enter before plotting or model fitting. Proper evaluation must keep supervised selection inside training folds, then assess genuinely held-out samples without reusing their labels for selection."><input type="radio" name="heatmap-validation" value="C"><span><strong>C.</strong> Row z-scoring removes selection leakage, so the apparent separation is valid test performance.</span></label>
+                <label class="quiz-option" data-explanation="A lower mean in cancer does not require complete separation of individual values. Cancer and control distributions can overlap while their means differ. The volcano summarizes the group comparison; the heatmap shows the variability that a group-average estimate does not describe."><input type="radio" name="heatmap-validation" value="D"><span><strong>D.</strong> Because all 37 DEGs are downregulated, every cancer sample must be lower than every control.</span></label>
+              </fieldset>
+              <div class="quiz-actions"><button type="submit">Check answer</button><button type="reset">Try again</button></div>
+              <p class="caption">A visually persuasive result can be real without being a validated predictor.</p>
+            </form>
+            <div class="card quiz-feedback" role="status" aria-live="polite" aria-atomic="true"></div>
+            <div class="card quiz-solution"></div>
+          </div>
+          <aside class="notes">This section-ending question tests three tempting leaps: inferring clustering from ordering, treating z-scoring as a cure for supervised feature-selection leakage, and confusing group means with complete individual separation. The correct answer does not deny the observed differential expression; it limits the claim to the evidence actually available.</aside>
+        </section>
+
+        <section id="volcano-guide" aria-labelledby="title-4">
+          <p class="eyebrow">03 / decode the axes and both thresholds</p>
+          <h2 id="title-4">Left is effect direction. Up is statistical evidence.</h2>
+          <p class="lede">Each dot is a tested gene. The full-universe plot keeps the non-selected genes visible.</p>
+          <div class="grid plot-layout">
+            <figure>
+              <img class="original" src="__VOLCANO_IMAGE__" alt="Full-universe volcano with vertical log2 fold-change thresholds at minus one and plus one, and horizontal adjusted-p threshold at 0.05.">
+              <figcaption class="caption">Blue: selected downregulated DEGs. Grey: fails at least one selection rule. No upregulated DEGs meet both rules.</figcaption>
+            </figure>
+            <div class="axis-guide">
+              <article class="card"><h3>Horizontal / magnitude and direction</h3><p>log<sub>2</sub> fold change = cancer minus control.</p><p><strong>&minus;1 = half</strong> the expression; <strong>&minus;2 = one-quarter</strong>. Zero means no estimated average difference.</p></article>
+              <article class="card"><h3>Vertical / evidence after many tests</h3><p>&minus;log<sub>10</sub>(BH-adjusted p).</p><p><strong>1.30 &asymp; p<sub>adj</sub> 0.05</strong>; height 2 = p<sub>adj</sub> 0.01. Higher does not mean a larger effect.</p></article>
+              <article class="card"><h3>Selection / an AND rule</h3><p><strong>|log<sub>2</sub>FC| &gt; 1 AND p<sub>adj</sub> &lt; 0.05.</strong></p><p>A high grey dot near the centre can have a small adjusted p-value but insufficient fold change.</p></article>
+            </div>
+          </div>
+          <aside class="notes">Benjamini-Hochberg adjustment addresses multiple gene tests. A gene-specific adjusted p-value is not the probability that the gene is a false discovery or that a patient has cancer. The plotted test uses mean normalized log2 expression differences, converted to fold changes by exponentiation with base two. A twofold biological threshold and a statistical threshold answer different questions. The asymmetric cloud is a feature of this computed dataset; do not assume there must be significant genes on both sides.</aside>
+        </section>
+
+        <section id="volcano-examples" aria-labelledby="title-5">
+          <p class="eyebrow">04 / three marked points in the actual plot</p>
+          <h2 id="title-5">A larger decrease is not automatically stronger evidence.</h2>
+          <div class="grid plot-layout" style="margin-top:24px">
+            <figure>
+              __VOLCANO_ANNOTATED__
+              <figcaption class="caption">Rings locate the saved genes on the unchanged original raster. Numerical readings use the DEG table, not pixel estimates.</figcaption>
+              <button class="inspect" type="button" data-inspect="volcano">Inspect original volcano / without teaching overlays</button>
+            </figure>
+            <div class="volcano-cards">
+              <article class="card">
+                <h3><span class="number">1</span>YOD1 / higher on the plot</h3>
+                <p class="metric">__YOD1_METRICS__</p>
+                <p><span class="label">Reading:</span> __YOD1_READING__</p>
+                <p><span class="label">Interpretation:</span> Smaller decrease than TMPRSS11B, but stronger statistical evidence.</p>
+              </article>
+              <article class="card">
+                <h3><span class="number">2</span>TMPRSS11B / further left</h3>
+                <p class="metric">__TMPRSS11B_METRICS__</p>
+                <p><span class="label">Reading:</span> __TMPRSS11B_READING__</p>
+                <p><span class="label">Interpretation:</span> A larger estimated decrease than YOD1, but a larger adjusted p-value.</p>
+              </article>
+              <article class="card">
+                <h3><span class="number">3</span>SPAG9 / close to the horizontal line</h3>
+                <p class="metric">__SPAG9_METRICS__</p>
+                <p><span class="label">Reading:</span> __SPAG9_READING__</p>
+                <p><span class="label">Interpretation:</span> Just passes adjusted p &lt; 0.05. Selection alone does not establish robustness.</p>
+              </article>
+            </div>
+          </div>
+          <aside class="notes">The same number denotes the same gene in both figures. YOD1 has a smaller fold-change magnitude than SPAG9 yet a smaller adjusted p-value; the heatmap appearance alone did not reveal that distinction. TMPRSS11B was one of the published 14 genes; YOD1 and SPAG9 are additional computed DEGs. Blue in this full-universe volcano denotes all selected downregulated genes, not publication membership. The notebook's separate DEG-only labelled plot instead uses blue for published genes and orange for additional genes. These colour semantics must not be conflated.</aside>
+        </section>
+
+        <section id="compare" aria-labelledby="title-6">
+          <p class="eyebrow">05 / verify the numerical reading</p>
+          <h2 id="title-6">Compare effects and evidence in separate columns.</h2>
+          <p class="lede">Exact saved statistics drive this table; displayed values are rounded. Fold change = 2<sup>log2FC</sup>.</p>
+          <table aria-label="Computed statistics for the three highlighted genes">
+            <thead><tr><th scope="col">Gene</th><th scope="col">log<sub>2</sub>FC</th><th scope="col">BH-adjusted p</th><th scope="col">Plot height</th><th scope="col">Cancer / control</th><th scope="col">Estimated change</th></tr></thead>
+            <tbody>__GENE_TABLE__</tbody>
+          </table>
+          <div class="grid two">
+            <article class="card"><h3>Compare 1 versus 2</h3><p>YOD1 is <strong>higher</strong>; TMPRSS11B is <strong>further left</strong>.</p><p class="small">Evidence depends on variability and precision as well as effect size. Neither coordinate alone ranks clinical usefulness.</p></article>
+            <article class="card"><h3>Compare 1 versus 3</h3><p>SPAG9 has the larger estimated decrease, but YOD1 has the smaller adjusted p-value.</p><p class="small">Passing a cutoff is not a guarantee of stable selection in another cohort or analysis pipeline.</p></article>
+          </div>
+          <p class="takeaway">Question to practise: which example has the largest decrease, which the smallest adjusted p-value, and which barely clears the horizontal line?</p>
+          <aside class="notes">Answers: TMPRSS11B has the largest decrease of the three; YOD1 has the smallest adjusted p-value; SPAG9 is closest to the adjusted-p cutoff. Ratios are exponentiated mean log2-expression differences: they should not be confused with ratios of arithmetic means of linear-scale expression. Percent decreases describe estimated group effects, not individual patient measurements or diagnostic sensitivity. The original volcano provides no effect confidence intervals; this table does not invent them.</aside>
+        </section>
+
+        <section id="volcano-quiz-evidence" aria-labelledby="volcano-quiz-evidence-title">
+          <p class="eyebrow">Volcano / understanding check / 1 of 2</p>
+          <h2 id="volcano-quiz-evidence-title">Which interpretation keeps effect and evidence separate?</h2>
+          <p class="lede" id="volcano-evidence-scenario">YOD1: log2FC -1.113, adjusted p 0.00931. TMPRSS11B: log2FC -1.951, adjusted p 0.01603. SPAG9: log2FC -1.316, adjusted p 0.04918.</p>
+          <div class="grid quiz-layout">
+            <form class="quiz-form" data-correct="A" data-lesson="Read horizontal distance for effect size and vertical height for adjusted statistical evidence. Neither axis measures diagnostic performance, causality or the probability that a particular gene is a false discovery.">
+              <fieldset aria-describedby="volcano-evidence-scenario">
+                <legend>Choose the single best answer.</legend>
+                <label class="quiz-option" data-explanation="TMPRSS11B has the most negative log2FC of these three, so its estimated decrease is largest. YOD1 has the smallest adjusted p-value and sits highest. Effect size and evidence can rank genes differently because evidence depends on variability and precision as well as the estimated difference."><input type="radio" name="volcano-evidence" value="A" required><span><strong>A.</strong> TMPRSS11B has the largest estimated decrease; YOD1 has the strongest adjusted statistical evidence.</span></label>
+                <label class="quiz-option" data-explanation="The height is minus log10 of the adjusted p-value, not expression change. YOD1 is higher because its adjusted p-value is smaller. Its log2FC is less negative than that of TMPRSS11B and SPAG9, so it actually has the smallest estimated decrease among these three."><input type="radio" name="volcano-evidence" value="B"><span><strong>B.</strong> YOD1 has the largest expression decrease because it is highest on the plot.</span></label>
+                <label class="quiz-option" data-explanation="SPAG9 does pass adjusted p less than 0.05, but passing a cutoff does not establish robustness or a gene-specific false-discovery probability of 4.918%. BH adjustment addresses multiple testing; stability across analyses or cohorts needs additional evidence. A value just below the cutoff is not a guarantee of replication."><input type="radio" name="volcano-evidence" value="C"><span><strong>C.</strong> SPAG9 is robustly replicated, with exactly a 4.918% probability of being a false discovery.</span></label>
+                <label class="quiz-option" data-explanation="Log2FC -1.951 converts to approximately 2 raised to -1.951 = 0.26 times control expression, about 74% lower. It is not a 1.951-fold ratio. More importantly, the volcano does not measure discrimination of patients; a large group difference cannot by itself identify the best diagnostic marker."><input type="radio" name="volcano-evidence" value="D"><span><strong>D.</strong> TMPRSS11B is 1.951-fold lower and must therefore be the best diagnostic marker.</span></label>
+              </fieldset>
+              <div class="quiz-actions"><button type="submit">Check answer</button><button type="reset">Try again</button></div>
+              <p class="caption">The gene with the largest effect need not have the smallest adjusted p-value.</p>
+            </form>
+            <div class="card quiz-feedback" role="status" aria-live="polite" aria-atomic="true"></div>
+            <div class="card quiz-solution"></div>
+          </div>
+          <aside class="notes">The displayed statistics are rounded values from the same saved examples used earlier. The correct ranking is deliberately split between horizontal and vertical coordinates. The distractors target four distinct confusions: height as effect size, adjusted p as a gene-specific probability, selection as robustness, and log2FC as a raw fold ratio or clinical ranking.</aside>
+        </section>
+
+        <section id="volcano-quiz-thresholds" aria-labelledby="volcano-quiz-thresholds-title">
+          <p class="eyebrow">Volcano / understanding check / 2 of 2</p>
+          <h2 id="volcano-quiz-thresholds-title">One strict AND rule. Four tempting candidates.</h2>
+          <p class="lede" id="volcano-thresholds-scenario">Hypothetical genes, not new results. Apply |log2FC| &gt; 1 AND BH-adjusted p &lt; 0.05. Treat the values below as exact. Which one qualifies?</p>
+          <div class="grid quiz-layout">
+            <form class="quiz-form" data-correct="D" data-lesson="Both strict inequalities must hold. Raw p is not adjusted p, a value exactly on a boundary fails, and a tiny p-value cannot compensate for an insufficient effect size.">
+              <fieldset aria-describedby="volcano-thresholds-scenario">
+                <legend>Choose the single best answer.</legend>
+                <label class="quiz-option" data-explanation="The adjusted p-value passes, but the absolute log2FC equals 1 rather than exceeding it. This implementation uses a strict greater-than rule: an exact twofold decrease sits on the vertical boundary and is not selected. Rounded plot labels cannot settle such an edge case, which is why this question specifies exact values."><input type="radio" name="volcano-thresholds" value="A" required><span><strong>A.</strong> log2FC = -1.000; adjusted p = 0.001.</span></label>
+                <label class="quiz-option" data-explanation="The effect magnitude exceeds 1, but the adjusted p-value is 0.051 and fails the required cutoff of less than 0.05. The small raw p-value is not the quantity used for selection. Substituting it would ignore the multiple-testing adjustment built into this volcano."><input type="radio" name="volcano-thresholds" value="B"><span><strong>B.</strong> log2FC = -1.200; raw p = 0.001; adjusted p = 0.051.</span></label>
+                <label class="quiz-option" data-explanation="The very small adjusted p-value gives strong statistical evidence, but absolute log2FC is only 0.800. It fails the effect-size criterion and would sit between the vertical thresholds. Under an AND rule, evidence cannot compensate for failing the specified biological-effect cutoff."><input type="radio" name="volcano-thresholds" value="C"><span><strong>C.</strong> log2FC = +0.800; adjusted p = 0.0001.</span></label>
+                <label class="quiz-option" data-explanation="Absolute log2FC 1.010 is strictly greater than 1, and adjusted p 0.049 is strictly less than 0.05, so both conditions hold. This hypothetical gene is upregulated and would lie in the upper-right selection region. The saved saliva run having no upregulated DEGs is an observation, not a ban on selecting them."><input type="radio" name="volcano-thresholds" value="D"><span><strong>D.</strong> log2FC = +1.010; adjusted p = 0.049.</span></label>
+              </fieldset>
+              <div class="quiz-actions"><button type="submit">Check answer</button><button type="reset">Try again</button></div>
+              <p class="caption">Pay attention to &gt; versus &ge;, raw versus adjusted p, and direction versus eligibility.</p>
+            </form>
+            <div class="card quiz-feedback" role="status" aria-live="polite" aria-atomic="true"></div>
+            <div class="card quiz-solution"></div>
+          </div>
+          <aside class="notes">The exact values are synthetic teaching examples, clearly separated from actual results. Only D passes both strict criteria. A is an exact-boundary trap, B a raw-versus-adjusted-p trap, and C an effect-versus-evidence trap. D also tests whether learners mistakenly assume that no upregulated genes can qualify merely because none qualified in this saved saliva run.</aside>
+        </section>
+
+        <section id="limits" aria-labelledby="title-7">
+          <p class="eyebrow">06 / combine the views, keep the limits</p>
+          <h2 id="title-7">A coherent expression signal is not a diagnostic test.</h2>
+          <div class="grid two" style="margin-top:32px">
+            <article class="card">
+              <h3>What these figures support</h3>
+              <ul>
+                <li><strong>Heatmap:</strong> individual variability and shared relative-expression patterns among selected genes.</li>
+                <li><strong>Volcano:</strong> estimated cancer-control effects and adjusted statistical evidence.</li>
+                <li><strong>Saved saliva result:</strong> 37 downregulated DEGs; all 14 published genes recovered, plus 23 additional genes.</li>
+              </ul>
+            </article>
+            <article class="card">
+              <h3>What they do not establish</h3>
+              <ul>
+                <li>Red = cancer, or every cancer sample below every control.</li>
+                <li>Causality, exact numerical replication, or biological importance from a p-value alone.</li>
+                <li>Diagnostic sensitivity, specificity or AUC, or independent clinical validation.</li>
+              </ul>
+            </article>
+          </div>
+          <p class="takeaway"><strong>Selection matters:</strong> these genes were chosen for differences in this same cohort. A visually striking heatmap is not independent validation.</p>
+          <p class="small" style="margin-top:24px">Saliva DE verdict: partially reproduced. This lesson concerns these saved saliva figures; it does not assess the status of other cohorts, model runs or ongoing robustness checks.</p>
+          <aside class="notes">The selected heatmap genes come from full-cohort differential expression, so the apparent pattern is partly expected by construction. Establishing predictive usefulness requires leakage-controlled evaluation and independent validation, not visual separation alone. Differences in gene mapping, filtering and the number of selected genes prevent an exact replication claim. Do not copy the older saliva snapshot's remaining-work list as the current status of the entire project; this deck deliberately limits its claim to interpreting these figures.</aside>
+        </section>
+
+        <section id="sources" aria-labelledby="title-8">
+          <p class="eyebrow">Sources / provenance / presenting</p>
+          <h2 id="title-8">Original figures. Traceable readings. No new analysis.</h2>
+          <div class="grid two sources" style="margin-top:28px">
+            <article class="card">
+              <h3>Evidence used in this lesson</h3>
+              <p><strong>Dataset:</strong> GSE64951; 94 saliva samples, 63 cancer and 31 controls.</p>
+              <p><strong>Saved sources:</strong> <code>reference/computed/GSE64951/</code>: <code>heatmap.png</code>, <code>volcano.png</code>, <code>degs.csv</code>, <code>manifest.csv</code> and <code>summary.json</code>.</p>
+              <p><strong>Method:</strong> raw-PM Python RMA; moderated differential expression; BH adjustment. Numerical affy/limma parity is not established.</p>
+              <p class="small">Source hashes, highlighted statistics, sample metadata and raster annotation calibration are embedded in this HTML as interpretation-source-records.</p>
+            </article>
+            <article class="card">
+              <h3>Publication and controls</h3>
+              <p>Lopes et al., <em>Scientific Reports</em> 15, 18491 (2025).</p>
+              <p><a href="https://doi.org/10.1038/s41598-025-96864-0" target="_blank" rel="noopener noreferrer">DOI: 10.1038/s41598-025-96864-0</a></p>
+              <p><strong>Navigate:</strong> arrow keys or on-screen controls. <strong>Esc:</strong> overview. <strong>F:</strong> full screen.</p>
+              <p><strong>N:</strong> presenter notes. Toolbar: theme switch and print. Inspection buttons: original images, with fit or full-resolution viewing.</p>
+              <p><strong>Section quizzes:</strong> two single-answer questions per section. Select an option, then Check answer for detailed feedback; Try again resets that question. Printed slides include solutions.</p>
+              <p class="small">All presentation assets work offline. Only following the publication link needs internet. Reveal.js 5.2.1 / MIT; license retained in the bundled runtime and styles.</p>
+            </article>
+          </div>
+          <p class="takeaway">Use a repeatable sentence: <strong>&ldquo;I observe &hellip; This supports &hellip; It does not establish &hellip;&rdquo;</strong></p>
+          <aside class="notes">The full original PNG bytes are embedded without recolouring, rescaling the scientific axes, or removing genes. SVG overlays add only outlines, rings, labels and leader lines. Row strips are crops of the original heatmap for readability. Annotation positions are calibrated to the hash-verified raster; scientific values come from the saved CSV. Reveal.js and its MIT notice are reused from the existing offline deck. Existing presentations are not modified.</aside>
+        </section>
+      </div>
+    </div>
+  </main>
+  <dialog id="notes-dialog" aria-labelledby="notes-heading">
+    <div class="dialog-top"><h2 id="notes-heading">Presenter notes</h2><button type="button" data-close>Close</button></div>
+    <div id="notes-content"></div>
+  </dialog>
+  <dialog id="image-dialog" aria-labelledby="image-heading">
+    <div class="dialog-top">
+      <h2 id="image-heading">Original figure</h2>
+      <nav aria-label="Image inspection tools"><button id="image-size-button" type="button" aria-pressed="false">Full resolution</button><button type="button" data-close>Close</button></nav>
+    </div>
+    <div class="image-scroll"><img id="inspection-image" alt=""></div>
+  </dialog>
+  <script id="interpretation-source-records" type="application/json">__SOURCE_RECORDS__</script>
+  <script id="reveal-runtime">__REVEAL_RUNTIME__</script>
+  <script>
+    (() => {
+      const notesDialog = document.getElementById("notes-dialog");
+      const imageDialog = document.getElementById("image-dialog");
+      const imageScroll = imageDialog.querySelector(".image-scroll");
+      const sizeButton = document.getElementById("image-size-button");
+      const images = {
+        heatmap: {src: "__HEATMAP_IMAGE__", title: "Original saliva heatmap / 37 genes, 94 samples"},
+        volcano: {src: "__VOLCANO_IMAGE__", title: "Original full-universe saliva volcano / no teaching overlays"}
+      };
+      document.querySelectorAll(".quiz-form").forEach(form => {
+        const slide = form.closest("section");
+        const feedback = slide.querySelector(".quiz-feedback");
+        const options = [...form.querySelectorAll('input[type="radio"]')];
+        const correct = options.find(option => option.value === form.dataset.correct);
+        const correctLabel = correct.closest(".quiz-option");
+        const paragraph = (parent, text, tag = "p") => {
+          const element = document.createElement(tag);
+          element.textContent = text;
+          parent.append(element);
+          return element;
+        };
+        const resetFeedback = () => {
+          feedback.replaceChildren();
+          delete feedback.dataset.result;
+          paragraph(feedback, "Commit to a reading.", "h3");
+          paragraph(feedback, "Choose one answer and select Check answer. You will see why your choice is correct or incorrect, the correct reasoning, and a transferable lesson.");
+          form.querySelectorAll("[data-result]").forEach(option => delete option.dataset.result);
+        };
+        resetFeedback();
+        const solution = slide.querySelector(".quiz-solution");
+        paragraph(solution, `Answer: ${correctLabel.querySelector("span").textContent}`, "h3");
+        paragraph(solution, correctLabel.dataset.explanation);
+        paragraph(solution, form.dataset.lesson);
+        form.addEventListener("change", resetFeedback);
+        form.addEventListener("reset", resetFeedback);
+        form.addEventListener("submit", event => {
+          event.preventDefault();
+          if (!form.reportValidity()) return;
+          const selected = options.find(option => option.checked);
+          const label = selected.closest(".quiz-option");
+          const isCorrect = selected === correct;
+          feedback.replaceChildren();
+          feedback.dataset.result = isCorrect ? "correct" : "incorrect";
+          label.dataset.result = feedback.dataset.result;
+          correctLabel.dataset.result = "correct";
+          paragraph(feedback, isCorrect ? `Correct - ${selected.value}.` : `Not quite - you chose ${selected.value}.`, "h3");
+          paragraph(feedback, isCorrect ? "Why this is correct" : "Why your choice does not follow", "h4");
+          paragraph(feedback, label.dataset.explanation);
+          if (!isCorrect) {
+            paragraph(feedback, `Correct answer: ${correct.value}`, "h4");
+            paragraph(feedback, correctLabel.dataset.explanation);
+          }
+          const lesson = paragraph(feedback, `Takeaway: ${form.dataset.lesson}`);
+          lesson.className = "quiz-lesson";
+        });
+      });
+      let returnFocus = null;
+      const openDialog = (dialog, trigger) => {
+        document.querySelectorAll("dialog[open]").forEach(open => open.close());
+        returnFocus = trigger;
+        dialog.showModal();
+      };
+      const showNotes = () => {
+        const slide = Reveal.getCurrentSlide();
+        document.getElementById("notes-heading").textContent = slide.querySelector("h1, h2").textContent;
+        document.getElementById("notes-content").textContent = slide.querySelector(".notes").textContent;
+        openDialog(notesDialog, document.getElementById("notes-button"));
+      };
+      document.querySelectorAll("[data-close]").forEach(button => button.addEventListener("click", () => button.closest("dialog").close()));
+      document.querySelectorAll("dialog").forEach(dialog => dialog.addEventListener("close", () => {
+        if (returnFocus) returnFocus.focus();
+      }));
+      document.querySelectorAll("[data-inspect]").forEach(button => button.addEventListener("click", () => {
+        const source = images[button.dataset.inspect];
+        const image = document.getElementById("inspection-image");
+        image.src = source.src;
+        image.alt = source.title;
+        document.getElementById("image-heading").textContent = source.title;
+        imageScroll.classList.remove("native");
+        sizeButton.textContent = "Full resolution";
+        sizeButton.setAttribute("aria-pressed", "false");
+        openDialog(imageDialog, button);
+      }));
+      sizeButton.addEventListener("click", () => {
+        const native = imageScroll.classList.toggle("native");
+        sizeButton.textContent = native ? "Fit to window" : "Full resolution";
+        sizeButton.setAttribute("aria-pressed", String(native));
+      });
+      document.getElementById("theme-button").addEventListener("click", () => {
+        document.documentElement.dataset.theme = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
+      });
+      document.getElementById("print-button").addEventListener("click", () => window.print());
+      document.getElementById("notes-button").addEventListener("click", showNotes);
+      document.addEventListener("keydown", event => {
+        const activeDialog = document.querySelector("dialog[open]");
+        if (event.key === "Escape" && activeDialog) {
+          event.preventDefault();
+          event.stopImmediatePropagation();
+          activeDialog.close();
+          return;
+        }
+        // Reveal ignores Escape when a radio input has focus.
+        if (event.key === "Escape" && document.activeElement.closest(".quiz-form")) {
+          event.preventDefault();
+          event.stopImmediatePropagation();
+          Reveal.toggleOverview();
+          return;
+        }
+        if (event.key.toLowerCase() === "n" && !event.ctrlKey && !event.metaKey && !event.altKey && !activeDialog) {
+          event.preventDefault();
+          showNotes();
+        }
+      });
+      Reveal.initialize({
+        width: 1600, height: 900, margin: .025, center: false, hash: true,
+        controls: true, progress: true, slideNumber: "c/t", transition: "fade",
+        keyboardCondition: event => !document.querySelector("dialog[open]") &&
+          !(document.activeElement.closest(".quiz-form") &&
+            ["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", " ", "Enter", "Home", "End"].includes(event.key))
+      });
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,82 @@
+{
+  "status": "completed raw processing, DE, GO and ML scenarios A-D; robustness incomplete; live process state unverified after remote admission failure",
+  "source_session": "542e0f00-54be-473b-acfe-792c40edb26f",
+  "source_directory": "results/retry-20261102/",
+  "execution_commit": "c72855d6729a7c08bf61cccbe1656ce1607e068a",
+  "transfer": "Exact small records relayed by coordinated execution session; original PNG attachments downloaded using authenticated GitHub and checked against execution SHA256.",
+  "record_hash_convention": "UTF-8 without BOM, LF line endings, one trailing newline",
+  "execution_observation": {
+    "last_confirmed_agent_report_utc": "2026-11-02T09:56:05.915767812Z",
+    "last_report": "Robustness running; only tissue RF same-holdout fold-local subcheck completed.",
+    "subsequent_mission_control_state": "idle",
+    "live_robustness_process_state": "unknown; session idle does not establish process exit or completion",
+    "continuation_delivery_error": "Remote priority admission timed out; message was not sent",
+    "recovery_capability": "Available gh agent-task commands are create, list and view; no existing-task resume command is offered.",
+    "no_duplicate_run_started": true
+  },
+  "files_sha256": {
+    "gene_counts.csv": "fc323cefda67d0d2c2003748798d22892b017ccd1ee993e78ee4edcdcc2afa71",
+    "deg_overlap.json": "397c8cdcbdbe3e641f7e04591cb0c69c37851045253f942703cd5d10ea4115b9",
+    "go_summary.json": "d421a77deb9e32ac4ba3dacd8d0bec91596ba340da1ec2f11c18e1ff08d99731",
+    "computed_metrics.csv": "1115652fc65478cfff087c4aec7cb13c0d77da8cb824c51aa85237998655150d",
+    "tissue-rf-fold-local.json": "c5925f14c4113e46a005838edfeb97356a2727a7ee5e371542df2e2c9034edbf",
+    "tissue-volcano.png": "ccee87d5bc8ef1f2612e40b2cece29e69a7ea1b37bc96797b508d4219684ef43",
+    "tissue-heatmap.png": "69689f7655de641495cc082f333088c5e94c7a8eaeca0bb514f32ff9cb5ae766",
+    "tissue-go.png": "aa53410fad53bf9813130b90bb33ae3d17f8125107b929ae814c2ed8755cb74a",
+    "saliva-go.png": "a838ae6a0b0c1c964a85a34a7799f277ebedab37cac10c656bdbec49c1a54e92",
+    "model-auc.png": "149c2aeae189b214c7db7988a6b15d05dd20416a5ee53822df6e6e71e8e12113",
+    "model-roc.png": "f67cfa7f306fe0f127a6c37aef5753825980c4c6c3295da3ec1a714aefa0a283"
+  },
+  "normalization": {
+    "method": "raw_PM_RMA_python",
+    "pipeline": "normal-exponential background; mean-rank quantiles; log2; Tukey median polish",
+    "fallback": false,
+    "provenance_sha256": {
+      "GSE66229": "45ed516a9807ca48da4b9ea4edc2a79b1ac3d39fc1c0ce089363bc4934318cbc",
+      "GSE64951": "94cd6d3867be4922917612460c02a0c6fb4ebeba66d4cf26022d4ff50f5d376b",
+      "GSE54129": "632d80b778bcfdeaca7702600c594944288f9e133e30f88e955dc7e647bb85ed",
+      "GSE13911": "627bd0bf94c2157c26c803408801daa5e93d6f199640b55f18833f2a18614951"
+    },
+    "warning": "Four emitted RuntimeWarnings at rma.py:487: Median polish reached max_iter without convergence. max_iter=50, tolerance=1e-6. Logs do not identify probe sets or cohorts; warning count is not a count of nonconvergent probe sets. Numerical affy parity is not established."
+  },
+  "differential_expression": {
+    "filter": "any_above_median",
+    "thresholds": "abs(log2FC)>1 and BH padj<0.05",
+    "method": "independent two-group OLS with empirical-Bayes moderation"
+  },
+  "modeling": {
+    "status": "scenarios A-D completed; full-cohort-DE leakage branch, not robustness-corrected",
+    "bootstrap": "2000 stratified bootstraps conditional on the fitted model; not whole-pipeline uncertainty",
+    "tissue_selected_genes": ["CEMIP", "ADIPOQ", "LIFR", "PACC1", "ESM1", "GPX3", "TMT1A"],
+    "tissue_published_panel_overlap": ["ESM1", "TMT1A"],
+    "saliva_candidates": "all 37 discovered DEGs, not the fixed published 14-gene panel",
+    "saliva_holdout": "29 samples: 19 GC, 10 controls",
+    "undefined_metrics": "Undefined PPV/LR+ remain blank; infinite LR+ remains inf. No AUC inversion or outcome relabeling.",
+    "remote_supporting_sha256": {
+      "GSE66229/models/selection.json": "686479109d5a0fb1f5254a0af43544e39c76e1a11342aa7f313edd3d58777f2e",
+      "GSE64951/models/selection.json": "d04e1d55640f1ed2afdfb435c12e7f4bb2673d61a6c848b77a66754a3c81f8c4",
+      "computed_metric_intervals.csv": "d941b40c063f70de0859b22fea3cef70421fe84d0f578f98ac145807f2ba6c6e",
+      "tables_1_3_comparison.csv": "63d36ebd837ce98b19cb7f4021d6bd0a11b38e2f7de4217179a33a821e067b78",
+      "all_published_metric_comparison.csv": "d142dc4bdb54d3a9a261380262242b3d35c05f57a48a002ec051253a9a1a3fb3"
+    }
+  },
+  "gsea": {
+    "implementation": "gseapy 1.3.2 prerank",
+    "ranking": "all retained genes; signed moderated t descending; gene-name tie break",
+    "seed": 2025,
+    "permutations": 1000,
+    "min_size": 15,
+    "max_size": 500,
+    "threads": 1,
+    "significance": "FDR per ontology; not clusterProfiler adjusted P. Zero empirical FDR entries are finite-permutation estimates.",
+    "provenance_sha256": {
+      "GSE66229": "49cc92c2f7a39e112bbd93a5e274cd4c1f0bfb6a7d38e54bdde5f942d166b556",
+      "GSE64951": "4f26be1e07de5e70f9d68ed1f4329286ce06fd39f4348f2bbb57fb1486a7609a"
+    },
+    "gmt_sha256": {
+      "BP": "4be7e1b5ed62ab3a8a4837743fa8c9520fc572c5d28dcad8478ed136189908b9",
+      "CC": "fe107911f2e69daba2272687a250328c5ffb08b944464ee29bcb158b75d84344",
+      "MF": "65bcfb8fa0553482b3759c4c091ef8a3428eb319fa7f8dc2bc1828e0133fe17f"
+    }
+  }
+}

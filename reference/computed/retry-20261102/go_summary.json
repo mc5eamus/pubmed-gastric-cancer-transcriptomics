@@ -1,0 +1,152 @@
+[
+  {
+    "dataset": "GSE66229",
+    "ontology": "BP",
+    "tested_terms": 2395,
+    "significant_fdr_lt_005": 402,
+    "positive_nes": 329,
+    "negative_nes": 73,
+    "top_abs_nes_terms": [
+      {
+        "Term": "Muscle Contraction (GO:0006936)",
+        "NES": -2.934780585235957,
+        "FDR q-val": 0.0
+      },
+      {
+        "Term": "DNA Metabolic Process (GO:0006259)",
+        "NES": 2.8840813448556095,
+        "FDR q-val": 0.0
+      },
+      {
+        "Term": "DNA-templated DNA Replication (GO:0006261)",
+        "NES": 2.8454104182309776,
+        "FDR q-val": 0.0
+      }
+    ]
+  },
+  {
+    "dataset": "GSE66229",
+    "ontology": "CC",
+    "tested_terms": 233,
+    "significant_fdr_lt_005": 71,
+    "positive_nes": 50,
+    "negative_nes": 21,
+    "top_abs_nes_terms": [
+      {
+        "Term": "Small-Subunit Processome (GO:0032040)",
+        "NES": 2.756169517687885,
+        "FDR q-val": 0.0
+      },
+      {
+        "Term": "Nuclear Chromosome (GO:0000228)",
+        "NES": 2.74182453811487,
+        "FDR q-val": 0.0
+      },
+      {
+        "Term": "Spliceosomal tri-snRNP Complex (GO:0097526)",
+        "NES": 2.620067098483259,
+        "FDR q-val": 0.0
+      }
+    ]
+  },
+  {
+    "dataset": "GSE66229",
+    "ontology": "MF",
+    "tested_terms": 404,
+    "significant_fdr_lt_005": 59,
+    "positive_nes": 47,
+    "negative_nes": 12,
+    "top_abs_nes_terms": [
+      {
+        "Term": "Single-Stranded DNA Helicase Activity (GO:0017116)",
+        "NES": 2.5544254181073,
+        "FDR q-val": 0.0
+      },
+      {
+        "Term": "snoRNA Binding (GO:0030515)",
+        "NES": 2.3993372935055834,
+        "FDR q-val": 0.0
+      },
+      {
+        "Term": "Voltage-Gated Potassium Channel Activity (GO:0005249)",
+        "NES": -2.319011910380528,
+        "FDR q-val": 0.002087169226883271
+      }
+    ]
+  },
+  {
+    "dataset": "GSE64951",
+    "ontology": "BP",
+    "tested_terms": 2625,
+    "significant_fdr_lt_005": 88,
+    "positive_nes": 0,
+    "negative_nes": 88,
+    "top_abs_nes_terms": [
+      {
+        "Term": "COPII-coated Vesicle Budding (GO:0090114)",
+        "NES": -2.318247155405733,
+        "FDR q-val": 0.0025071257426634783
+      },
+      {
+        "Term": "Regulation Of Translational Initiation (GO:0006446)",
+        "NES": -2.268751103508812,
+        "FDR q-val": 0.0018803443069976087
+      },
+      {
+        "Term": "Epidermal Cell Differentiation (GO:0009913)",
+        "NES": -2.258618143295894,
+        "FDR q-val": 0.0012535628713317391
+      }
+    ]
+  },
+  {
+    "dataset": "GSE64951",
+    "ontology": "CC",
+    "tested_terms": 251,
+    "significant_fdr_lt_005": 53,
+    "positive_nes": 0,
+    "negative_nes": 53,
+    "top_abs_nes_terms": [
+      {
+        "Term": "Azurophil Granule (GO:0042582)",
+        "NES": -2.23529572070459,
+        "FDR q-val": 0.0
+      },
+      {
+        "Term": "Cornified Envelope (GO:0001533)",
+        "NES": -2.232991180806435,
+        "FDR q-val": 0.0
+      },
+      {
+        "Term": "Azurophil Granule Lumen (GO:0035578)",
+        "NES": -2.2209115620049817,
+        "FDR q-val": 0.0
+      }
+    ]
+  },
+  {
+    "dataset": "GSE64951",
+    "ontology": "MF",
+    "tested_terms": 462,
+    "significant_fdr_lt_005": 39,
+    "positive_nes": 0,
+    "negative_nes": 39,
+    "top_abs_nes_terms": [
+      {
+        "Term": "Ubiquitin-Like Protein Transferase Activity (GO:0019787)",
+        "NES": -2.184172677331299,
+        "FDR q-val": 0.002319450297244869
+      },
+      {
+        "Term": "Cadherin Binding (GO:0045296)",
+        "NES": -2.169724897625011,
+        "FDR q-val": 0.0011597251486224346
+      },
+      {
+        "Term": "Nuclear Thyroid Hormone Receptor Binding (GO:0046966)",
+        "NES": -2.0646139689981706,
+        "FDR q-val": 0.006185200792652985
+      }
+    ]
+  }
+]

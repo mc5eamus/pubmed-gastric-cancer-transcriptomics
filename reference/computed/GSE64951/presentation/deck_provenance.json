@@ -1,0 +1,24 @@
+{
+  "status": "medical research draft; completed raw processing, DE, GO and ML scenarios A-D; robustness incomplete; remote live process status unverified",
+  "inputs_sha256": {
+    "presentation.html": "e43d4da8f5cdb05570a79a76de05689da8537e15616f388b6c93f4aa82a386c2",
+    "scripts\\build_medical_presentation.py": "276d90cdaa0d6e0759bfdd814f142167455f37144bba3a3a9188840882743763",
+    "scripts\\medical_slides.html": "86c910ad18a135f2b4096f641a09716889dab3cb86ffa2e6948546f1449f250a",
+    "reference\\publication\\metric_targets.csv": "45681cad6b9f1025329f8aedd87ad2e2293ebe1a84361ed376faf5c0fd896b0f",
+    "reference\\computed\\GSE64951\\presentation\\provenance.json": "11fdee3a21619e771830fc828b0ddbabb62cadfad3a91359f93ba95c2e47ba80",
+    "reference\\computed\\GSE64951\\presentation\\full_run_attempts.json": "16d1c2d9468e15a1b746ac940af5e5c13628681ce5e78b4142fc33601c643422",
+    "reference\\computed\\retry-20261102\\transfer_provenance.json": "c71a9393695968000ce578e4f0b4614285bbabd05060e5d9f79c6a5aa2c6ee79",
+    "reference\\computed\\retry-20261102\\gene_counts.csv": "0749d09bd777fcc944438168e1e5b8c9236fcc58cc90fac19ea14a3804f14b51",
+    "reference\\computed\\retry-20261102\\deg_overlap.json": "e32ee8dac8c0f97c8e9816855783a19217b269d7190e31de17755a8864c04b0c",
+    "reference\\computed\\retry-20261102\\go_summary.json": "d27f048814f6adc80eab804850d60e8b41a3e720065399157cf8f7496abeff82",
+    "reference\\computed\\retry-20261102\\computed_metrics.csv": "7c5611da1cd991e5705a5271c79f82d74716daa1aed0fc6e546a877a5f7b3daa",
+    "reference\\computed\\retry-20261102\\tissue-rf-fold-local.json": "93641dd718cff13852c327b4e0398756e3d7924cd1663a4113be24041634c1c7",
+    "reference\\computed\\retry-20261102\\tissue-volcano.png": "ccee87d5bc8ef1f2612e40b2cece29e69a7ea1b37bc96797b508d4219684ef43",
+    "reference\\computed\\retry-20261102\\tissue-heatmap.png": "69689f7655de641495cc082f333088c5e94c7a8eaeca0bb514f32ff9cb5ae766",
+    "reference\\computed\\retry-20261102\\tissue-go.png": "aa53410fad53bf9813130b90bb33ae3d17f8125107b929ae814c2ed8755cb74a",
+    "reference\\computed\\retry-20261102\\saliva-go.png": "a838ae6a0b0c1c964a85a34a7799f277ebedab37cac10c656bdbec49c1a54e92",
+    "reference\\computed\\retry-20261102\\model-auc.png": "149c2aeae189b214c7db7988a6b15d05dd20416a5ee53822df6e6e71e8e12113",
+    "reference\\computed\\retry-20261102\\model-roc.png": "f67cfa7f306fe0f127a6c37aef5753825980c4c6c3295da3ec1a714aefa0a283"
+  },
+  "output_sha256": "ba15d6c5835a313fe9221004711399ff5f8c5621f69edb8535208ceccd151546"
+}

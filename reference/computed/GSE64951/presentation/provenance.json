@@ -1,0 +1,33 @@
+{
+  "analysis_status": "partial reproduction; no new raw processing or model evaluation",
+  "figure_operation": "deterministic visualization of saved real-cohort results",
+  "analysis_source_commit": "c11b4d0d370feb9efa1e82681dc25c2819697134",
+  "generator": "scripts/build_medical_figures.py",
+  "generator_sha256": "68413c5d9c7822f92acc917bc01a874e2c9a9fb79574d5acd16e7f9d91dba160",
+  "inputs_sha256": {
+    "summary.json": "c8967b1e05638299bc52cac2962ce1fdf827463fb2947d54a87efdad270a1908",
+    "degs.csv": "bdde5b061fc53f2dbb79809a95b9c2960c9b33bd52a5cbfffada1f6e46d1be1a",
+    "filter_sensitivity.csv": "961afebc56ec05f10842d20640a10d3f42e17b39a689e34ebd1051a6a71e83de",
+    "manifest.csv": "6437d60ff65a8a76c40d06e828e319390a23214af112426cfa41b6debb5cb589",
+    "heatmap.png": "3fb8e17694d34a69492a9de8943409fc83bdbe473f2564f48d1eab3dd9d617c7",
+    "volcano.png": "c9fa5600566662d26f9983a73944da8f78c88c0fe358c22ea4e6d0753d2cd4e3"
+  },
+  "snapshot_verification": {
+    "degs.csv": "CSV with Git checkout CRLF normalized to LF",
+    "filter_sensitivity.csv": "CSV with Git checkout CRLF normalized to LF",
+    "manifest.csv": "CSV with Git checkout CRLF normalized to LF",
+    "heatmap.png": "exact bytes",
+    "volcano.png": "exact bytes"
+  },
+  "outputs_sha256": {
+    "filter_sensitivity.svg": "d80224524fb0774e5514a6a956d4db52e7a9753db4823c6616cc33aca008370d",
+    "gene_effects.svg": "5d394305372816a9ae6e612fb135ca12fe6160ab15afb1766fd86c52b2fd752b"
+  },
+  "unrun": [
+    "tissue raw processing and DE",
+    "GSEA",
+    "Tables 1\u20133 and Scenario C",
+    "robustness 1\u20135",
+    "supplementary Table S1 versions"
+  ]
+}

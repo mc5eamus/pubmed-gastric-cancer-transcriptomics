@@ -6,10 +6,140 @@ Python **3.14+**, with pinned dependencies and a hash-bearing `uv.lock`.
 **Status:** partial reproduction, not a completed numerical replication.
 Actual raw saliva processing recovered all 14 published DEGs among 37
 downregulated genes; mapped/filter counts differ (20,953 / 20,527).
-Tissue processing, GSEA, model tables and cohort-scale robustness remain unrun.
-Read `REPORT.md` for claim-by-claim status, assumptions, source discrepancies
-and data-access limitations. No published number is presented as computed.
+The cloud retry completed raw processing for all four cohorts, tissue/saliva
+DE and GO enrichment. Tissue yielded 1,616 DEGs, with two tissue-saliva
+overlapping genes; significant saliva BP terms were found, unlike the paper.
+Model scenarios A-D completed; saliva held-out SVM AUC was 0.311 rather
+than published 0.868, using 37 discovered rather than 14 fixed genes.
+Cohort-scale robustness remains incomplete.
+The new source-verified checkpoint is under `reference/computed/retry-20261102/`;
+`REPORT.md` preserves the earlier saliva-only audit and its limitations.
+No published number is presented as computed.
 This is research software, not a validated diagnostic.
+
+## Plain-language presentation
+
+Open **[presentation.html](presentation.html)** directly in a modern browser.
+The ten-slide Reveal.js presentation is a single, fully offline file: its
+runtime, styles, diagrams, presenter notes and source citations are embedded.
+Only following an external citation link requires internet access.
+
+Use the arrow keys or on-screen arrows to navigate, **N** for the current
+slide's notes, **S** for sources, **Esc** to close a panel or toggle the overview,
+and **F** for full screen. The toolbar also offers theme switching and printing
+of all ten slides without notes.
+
+The results slides include common-scale paper-versus-reproduction gene-count
+and gene-overlap charts, paired preprocessing counts, and explicit placeholders
+for unassessed prediction results. On slide 8, **Compare original plots** opens
+the paper's saliva volcano plot beside the computed plot, with their original
+axes and attribution preserved. The figures are embedded and work offline.
+
+The presentation distinguishes published findings from computed results:
+the reproduction recovered all 14 published saliva genes among 37 differing
+genes, but has not yet evaluated prediction models or established screening
+performance. Its evidence snapshot is commit
+`c72855d6729a7c08bf61cccbe1656ce1607e068a`; it is not a live results dashboard.
+
+## Medical-research presentation
+
+Open **[presentation-medical.html](presentation-medical.html)** for the separate
+ten-slide, fully offline medical-audience draft. The first slide sets the
+clinical context; subsequent slides use the publication's RMA, moderated DE,
+BH/FDR, GO/GSEA, validation and diagnostic-performance terminology. Each slide
+has a takeaway headline, presenter notes and source references. The
+plain-language presentation is preserved.
+
+The deck embeds **actual tissue and saliva volcano/heatmap figures**, completed
+GO enrichment figures, and DEG effect-size/filtering-sensitivity figures
+derived from the saved saliva results. Select the saliva heatmap for
+full-resolution inspection; the tissue heatmap and GO plots have separate
+inspection panels. The volcano slide also offers the original
+paper-versus-reproduction viewer.
+Published and computed saliva AUCs/95% CIs are compared on a common scale.
+Original model ROC and AUC figures for all scenarios are available in the
+inspection panel. Predictions were not inverted to improve the poor SVM result.
+Computed CIs use 2,000 stratified bootstraps conditional on the fitted model;
+these full-cohort-DE results risk selection leakage and are not
+robustness-corrected. No robustness result is invented.
+
+**This is a partial-reproduction draft, not a completed full-run presentation.**
+The original local attempt failed dependency TLS and memory prerequisites.
+An isolated cloud attempt restored exact dependencies but initially failed
+GEO downloads. A subsequent retry recovered original raw-data access and
+completed raw RMA for 695 samples across all four cohorts, DE and GO/GSEA,
+without fallback or reduced defaults. Model scenarios A-D have since completed;
+cohort-scale robustness remains incomplete, so the full-run prerequisite is not met.
+One tissue RF fold-local-selection subcheck completed on the verified same
+120-sample holdout (AUC 0.9948 versus 0.9970). No completed resampling block or
+final robustness result has been received. Later continuation messages failed
+remote priority admission; live process state cannot currently be verified.
+Session idling is not evidence of scientific completion or failure.
+Prior failure history is preserved in
+`reference/computed/GSE64951/presentation/full_run_attempts.json`.
+
+The completed checkpoint in `reference/computed/retry-20261102/` contains
+hash-verified small execution records, original figures and transfer
+provenance; full raw tables and logs remain in the coordinated cloud session.
+Four median-polish nonconvergence warnings were emitted. Their count does not
+identify affected cohorts or probe sets; numerical affy parity is unestablished.
+GO per-ontology permutation FDR is not clusterProfiler adjusted P.
+
+Regenerate the derived figures and bundled medical deck using Python's
+standard library, without installing scientific dependencies:
+
+```powershell
+python .\scripts\build_medical_presentation.py
+```
+
+The builder reads `presentation.html` as the offline Reveal shell and
+`scripts/medical_slides.html` as the medical content. Figure provenance,
+source hashes and deck provenance are saved under
+`reference/computed/GSE64951/presentation/`. CSV source hashes are checked
+against the saved snapshot, allowing only Git's Windows CRLF-to-LF checkout
+conversion; original PNG bytes are verified unchanged.
+
+## Heatmap and volcano interpretation presentation
+
+Open **[presentation-interpretation.html](presentation-interpretation.html)** for a
+separate twelve-slide Reveal.js lesson on reading the saved saliva visualizations.
+Three numbered examples follow **YOD1, TMPRSS11B and SPAG9** across the original
+heatmap and full-universe volcano. Enlarged heatmap row strips, marked volcano
+points, readings and interpretations distinguish relative expression, effect
+size, statistical evidence and diagnostic limitations.
+
+Each section ends with two deliberately tricky single-answer multiple-choice
+questions. Select an option and choose **Check answer** for an option-specific
+explanation, the correct reasoning and a takeaway. **Try again** resets only that
+question; responses stay in place while navigating the open deck. Questions cover
+row standardization, selection bias, effect size versus evidence, and strict
+DEG thresholds. Synthetic examples are explicitly labelled. Printed quiz slides
+include their solutions.
+
+The deck is a single fully offline HTML file, with original images, Reveal.js,
+presenter notes and source records embedded. Source hashes are checked before
+building; example statistics come from the saved DEG table, and the two example
+samples' cancer/control identities come from the manifest, not from colour.
+It interprets the saved saliva snapshot rather than reporting the current status
+of other cohorts or model runs. Existing presentations are preserved.
+
+Arrow keys navigate; **N** opens notes, **Esc** closes a panel or opens the
+overview, and **F** enters full screen. The toolbar provides theme switching and
+printing. Figure inspection buttons open the unannotated originals with a
+full-resolution option.
+Within quiz options, arrow keys change the selected radio button rather than
+advancing slides; use Tab to reach **Check answer**, or the on-screen arrows to
+continue the presentation.
+
+Regenerate without installing dependencies:
+
+```powershell
+python .\scripts\build_interpretation_presentation.py
+```
+
+The builder reuses the embedded Reveal.js runtime/styles in `presentation.html`
+and the content in `scripts/interpretation_slides.html`; it does not rerun
+expression analysis.
 
 ## Install
 

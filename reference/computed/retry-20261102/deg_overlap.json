@@ -1,0 +1,33 @@
+{
+  "genes": [
+    "GJB2",
+    "MMP12"
+  ],
+  "published_overlap": 0,
+  "saliva_published_missing": [],
+  "saliva_unreported_found": [
+    "ABHD17B",
+    "CAMSAP1",
+    "COMMD8",
+    "CRYBG1",
+    "ELL2",
+    "ERO1A",
+    "GJB2",
+    "MMP12",
+    "NCOA2",
+    "PHACTR4",
+    "PHLDA1",
+    "RAP2A",
+    "RAPGEF2",
+    "SLK",
+    "SPAG9",
+    "TAB3",
+    "TFRC",
+    "TJP1",
+    "TMOD3",
+    "UBA6",
+    "UBL3",
+    "YES1",
+    "YOD1"
+  ]
+}

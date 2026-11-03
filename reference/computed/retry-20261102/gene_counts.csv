@@ -1,0 +1,3 @@
+dataset,genes_before_filter,published_genes_before_filter,genes_retained,published_genes_retained,degs,published_degs,up,published_up,down,published_down
+GSE66229,20953,21367,15420,14782,1616,1302,662,579,954,723
+GSE64951,20953,21367,20527,20407,37,14,0,0,37,14
