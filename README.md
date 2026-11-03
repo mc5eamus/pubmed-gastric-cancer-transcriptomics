@@ -44,6 +44,13 @@ from `gastric-repro run` and never launches that long run from the notebook.
 Change `RUN_MODE` at the top to select a mode. CI executes the notebook in
 reference mode without network access.
 
+For a notebook that implements the core filtering, differential-expression,
+heatmap, and volcano calculations directly in its cells (without importing the
+package or invoking the CLI), open
+`notebooks/lopes2025_reproduction_standalone.ipynb`. It runs offline from the
+checked-in saliva result and automatically uses local full-cohort expression
+matrices when they are available.
+
 The saliva model stage supports both the published 14-gene panel and discovered
 DEGs: run `gastric-repro ml --saliva-gene-set published` or
 `gastric-repro ml --saliva-gene-set discovered` using separate output directories
