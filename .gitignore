@@ -222,4 +222,5 @@ __marimo__/
 # Public raw data, generated cohort results, and local environments
 /data/
 /results*/
+/notebook_results/
 /.venv/
