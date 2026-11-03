@@ -180,6 +180,13 @@ package or invoking the CLI), open
 `notebooks/lopes2025_reproduction_standalone.ipynb`. It runs offline from the
 checked-in saliva result and automatically uses local full-cohort expression
 matrices when they are available.
+The heatmap always shows individual samples, never two group means: offline
+mode displays the hash-verified saved 37-DEG by 94-sample raw-CEL figure and
+labels it as saved, not recomputed. With a local saliva expression matrix,
+the notebook requires every included sample, excludes other columns, and
+recomputes row z-scores across the cohort with control/cancer sample labels.
+Heatmap source, dimensions, group counts, and the output hash are recorded in
+`notebook_results/provenance.json`.
 
 The saliva model stage supports both the published 14-gene panel and discovered
 DEGs: run `gastric-repro ml --saliva-gene-set published` or
