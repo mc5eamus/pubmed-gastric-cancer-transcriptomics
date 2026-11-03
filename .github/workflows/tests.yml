@@ -32,3 +32,9 @@ jobs:
             notebooks/lopes2025_reproduction.ipynb \
             --output lopes2025_reproduction.executed.ipynb \
             --output-dir /tmp --ExecutePreprocessor.timeout=120
+      - name: Execute standalone reproduction notebook (offline)
+        run: |
+          uv run --frozen --group notebook jupyter nbconvert --to notebook --execute \
+            notebooks/lopes2025_reproduction_standalone.ipynb \
+            --output lopes2025_reproduction_standalone.executed.ipynb \
+            --output-dir /tmp --ExecutePreprocessor.timeout=120
