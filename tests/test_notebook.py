@@ -20,3 +20,6 @@ def test_standalone_notebook_is_documented_and_self_contained():
     assert "figure_3c_saliva_heatmap.png" in source
     assert "figure_3d_saliva_volcano.png" in source
     assert "differential_expression" in source
+    assert "read_gmt" in source
+    assert "bootstrap_auc" in source
+    assert "LogisticRegression" in source
