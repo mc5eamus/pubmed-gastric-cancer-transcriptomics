@@ -187,6 +187,11 @@ the notebook requires every included sample, excludes other columns, and
 recomputes row z-scores across the cohort with control/cancer sample labels.
 Heatmap source, dimensions, group counts, and the output hash are recorded in
 `notebook_results/provenance.json`.
+The labeled volcano is accompanied by the unchanged, hash-verified original
+full-universe volcano (20,527 retained genes), saved as
+`notebook_results/figures/figure_3d_saliva_volcano_original.png`. This reference
+figure preserves the unzoomed axes and is not recomputed from the compact
+offline DEG table or local expression results.
 
 The saliva model stage supports both the published 14-gene panel and discovered
 DEGs: run `gastric-repro ml --saliva-gene-set published` or

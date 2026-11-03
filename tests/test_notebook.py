@@ -142,6 +142,35 @@ def test_heatmap_rejects_unplottable_expression(heatmap_namespace, mutation):
     assert not (ns["FIGURES"] / "figure_3c_saliva_heatmap.png").exists()
 
 
+@pytest.mark.parametrize("local_expression", [False, True])
+def test_original_volcano_preserves_full_universe_snapshot(heatmap_namespace, local_expression):
+    ns = heatmap_namespace
+    if local_expression:
+        ns["expression_path"].parent.mkdir()
+        ns["expression_path"].touch()
+    exec(cell_source("original_volcano_path ="), ns)
+    saved = REFERENCE / "computed" / "GSE64951" / "volcano.png"
+    assert ns["original_volcano_path"].read_bytes() == saved.read_bytes()
+    assert ns["outputs"][1].data == saved.read_bytes()
+    assert "20,527 genes; not recomputed" in ns["outputs"][0].data
+    assert ns["original_volcano_path"].name == "figure_3d_saliva_volcano_original.png"
+
+
+def test_original_volcano_rejects_changed_snapshot(heatmap_namespace, tmp_path):
+    ns = heatmap_namespace
+    ns["REFERENCE"] = tmp_path / "reference"
+    snapshot = ns["REFERENCE"] / "computed" / "GSE64951"
+    snapshot.mkdir(parents=True)
+    (snapshot / "summary.json").write_bytes(
+        (REFERENCE / "computed" / "GSE64951" / "summary.json").read_bytes()
+    )
+    (snapshot / "volcano.png").write_bytes(b"changed image")
+    with pytest.raises(ValueError, match="original saliva volcano SHA256 changed"):
+        exec(cell_source("original_volcano_path ="), ns)
+    assert not ns["original_volcano_path"].exists()
+    assert not ns["outputs"]
+
+
 @pytest.mark.parametrize("missing", [False, True])
 def test_saliva_de_requires_and_selects_every_included_sample(heatmap_namespace, missing):
     ns = heatmap_namespace
